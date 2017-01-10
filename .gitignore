@@ -1,0 +1,12 @@
+*.tlog
+LuaT.Build.CppClean.log
+*.opendb
+*.suo
+*.user
+*.filters
+*.unsuccessfulbuild
+*.lastbuildstate
+/Execute/Debug/*.log
+/ipch/EXECUTE-dc7d3d47/*.ipch
+*.ipch
+*.db
