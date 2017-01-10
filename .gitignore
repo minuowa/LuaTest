@@ -1,0 +1,8 @@
+*.tlog
+LuaT.Build.CppClean.log
+*.opendb
+*.suo
+*.user
+*.filters
+*.unsuccessfulbuild
+*.lastbuildstate
