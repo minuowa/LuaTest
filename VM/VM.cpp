@@ -3,6 +3,7 @@
 #include "Allocater.h"
 #include "LuaTable.h"
 #include <fstream>
+#include "Delete.h"
 
 
 map<string, VirtualFile*> VM::mFiles;
@@ -62,6 +63,7 @@ void VM::Close()
 	this->PrintGCCount("Close Lua");
 	lua_close(mState);
 	mState = nullptr;
+	DeleteMap(mFiles);
 	SAFE_DELETE(mAllocater);
 }
 

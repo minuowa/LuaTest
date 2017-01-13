@@ -29,13 +29,14 @@ public:
 	int GCBitCount();
 	void* Allocate(void *ptr, size_t osize, size_t nsize);
 
-	bool DoFile(const char* filename);
-	bool DoString(const char* str, const char* chunkName = nullptr);
 	void AddLoader();
 	void PrintGCCount(const char* what = nullptr);
 	void PrintError();
 
-	Ptr<LuaTable> Require(const char* str,const char* moduleName);
+	bool DoFile(const char* filename);
+	bool DoString(const char* str, const char* chunkName = nullptr);
+
+	Ptr<LuaTable> Require(const char* str, const char* moduleName);
 	Ptr<LuaTable> Require(string name);
 	Ptr<LuaTable> GetTable(string name);
 private:

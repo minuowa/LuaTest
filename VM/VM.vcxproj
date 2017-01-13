@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Allocater.h" />
+    <ClInclude Include="Delete.h" />
     <ClInclude Include="FunctionTaker.h" />
     <ClInclude Include="LuaComponent.h" />
     <ClInclude Include="LuaModule.h" />
