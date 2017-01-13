@@ -1,6 +1,7 @@
 #pragma once
 #include "LuaTable.h"
 #include "Ptr.h"
+#include "VirtualFile.h"
 class Allocater;
 
 class VM
@@ -11,12 +12,15 @@ public:
 private: 
 	lua_State* mState;
 	Allocater* mAllocater;
-	lua_Reader mLoader;
+	static map<string, VirtualFile*> mFiles;
 public:
 	VM();
 	~VM();
 public:
 	lua_State* GetState();
+public:
+	static VirtualFile* GetVirtualFile(const char* fileName);
+	static int MyLoader(lua_State * pState);
 
 	bool Open();
 	void Close();
@@ -25,9 +29,9 @@ public:
 	int GCBitCount();
 	void* Allocate(void *ptr, size_t osize, size_t nsize);
 
-	void SetLoader(lua_Reader loader);
 	bool DoFile(const char* filename);
 	bool DoString(const char* str, const char* chunkName = nullptr);
+	void AddLoader();
 	void PrintGCCount(const char* what = nullptr);
 	void PrintError();
 

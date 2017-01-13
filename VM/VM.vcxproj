@@ -159,6 +159,7 @@
     <ClInclude Include="LuaTable.h" />
     <ClInclude Include="LuaValue.h" />
     <ClInclude Include="Ptr.h" />
+    <ClInclude Include="VirtualFile.h" />
     <ClInclude Include="VM.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="LuaTable.cpp" />
     <ClCompile Include="LuaValue.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VirtualFile.cpp" />
     <ClCompile Include="VM.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

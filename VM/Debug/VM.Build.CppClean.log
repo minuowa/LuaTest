@@ -11,6 +11,7 @@ d:\project\luatest\vm\debug\luatable.obj
 d:\project\luatest\vm\debug\luavalue.obj
 d:\project\luatest\vm\debug\main.obj
 d:\project\luatest\vm\debug\vm.obj
+d:\project\luatest\vm\debug\virtualfile.obj
 d:\project\luatest\debug\vm.lib
 d:\project\luatest\debug\vm.pdb
 d:\project\luatest\vm\debug\vm.tlog\cl.command.1.tlog

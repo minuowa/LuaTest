@@ -5,10 +5,11 @@
 #include <fstream>
 
 
+map<string, VirtualFile*> VM::mFiles;
+
 VM::VM()
 	:mState(nullptr)
 	, mAllocater(nullptr)
-	, mLoader(nullptr)
 {
 }
 
@@ -23,15 +24,17 @@ lua_State* VM::GetState()
 	return mState;
 }
 
-void VM::SetLoader(lua_Reader loader)
+VirtualFile* VM::GetVirtualFile(const char* fileName)
 {
-	mLoader = loader;
+	auto ret = mFiles.find(fileName);
+	if (ret != mFiles.end())
+		return ret->second;
+	return nullptr;
 }
 
 void* GlobalAllocate(void *ud, void *ptr, size_t osize, size_t nsize)
 {
 	VM* vm = (VM*)ud;
-
 	return vm->Allocate(ptr, osize, nsize);
 }
 
@@ -46,6 +49,7 @@ bool VM::Open()
 	mAllocater = new Allocater();
 	if (!this->InitState())
 		return false;
+	this->AddLoader();
 	return true;
 }
 
@@ -94,19 +98,20 @@ Ptr<LuaTable> VM::Require(string name)
 
 Ptr<LuaTable> VM::Require(const char* str, const char* moduleName)
 {
-	if (!str || !moduleName)
-		return nullptr;
-
-	string filename = moduleName;
-	if (string::npos == filename.find(FileExtension))
-		filename += FileExtension;
-
-	std::ofstream of(filename);
-	of << str;
-	of.close();
+	VirtualFile* vf = GetVirtualFile(moduleName);
+	if (!vf)
+	{
+		vf = new VirtualFile();
+		vf->content = str;
+		vf->modulename = moduleName;
+		mFiles.insert(make_pair(moduleName, vf));
+	}
+	else
+	{
+		vf->content = str;
+	}
 
 	Ptr<LuaTable> m = Require(moduleName);
-	remove(filename.c_str());
 	return m;
 }
 
@@ -168,4 +173,63 @@ bool VM::DoString(const char* str, const char* chunkName /*= nullptr*/)
 	}
 	
 	return true;
+}
+
+int VM::MyLoader(lua_State* pState)
+{
+	std::string module = lua_tostring(pState, 1);
+	string fullname = module + ".lua";
+	VirtualFile* file = GetVirtualFile(module.c_str());
+
+	if(file)
+	{
+		luaL_loadbuffer(pState, file->content.c_str(), file->content.length(), fullname.c_str());
+	}
+	else
+	{
+		try
+		{
+			ifstream in(fullname);
+			size_t size = in.tellg();
+			in.seekg(0, ios::beg);
+			char* buffer = new char[size];
+			in.read(buffer, size);
+			in.close();
+			luaL_loadbuffer(pState, buffer, size, fullname.c_str());
+		}
+		catch (...)
+		{
+			std::string err = "\n\tError - MyLoader could not find ";
+			err += module;
+			err += ".";
+			lua_pushstring(pState, err.c_str());
+		}
+	}
+	return 1;
+}
+
+void VM::AddLoader()
+{
+	lua_getfield(mState, LUA_GLOBALSINDEX, "package");	// push "package"
+	lua_getfield(mState, -1, "loaders");					// push "package.loaders"
+	lua_remove(mState, -2);								// remove "package"
+															// Count the number of entries in package.loaders.
+															// Table is now at index -2, since 'nil' is right on top of it.
+															// lua_next pushes a key and a value onto the stack.
+
+	int numLoaders = 0;
+	lua_pushnil(mState);
+
+	while (lua_next(mState, -2) != 0)
+	{
+		lua_pop(mState, 1);
+		numLoaders++;
+	}
+
+	lua_pushinteger(mState, numLoaders + 1);
+	lua_pushcfunction(mState, MyLoader);
+	lua_rawset(mState, -3);
+	// Table is still on the stack.  Get rid of it now.
+
+	lua_pop(mState, 1);
 }
