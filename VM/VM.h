@@ -6,6 +6,7 @@ class Allocater;
 class VM
 {
 public: 
+	const string FileExtension = ".lua";
 	static const int RetSucess = 0;
 private: 
 	lua_State* mState;
@@ -26,10 +27,11 @@ public:
 
 	void SetLoader(lua_Reader loader);
 	bool DoFile(const char* filename);
-	bool DoString(const char* str);
+	bool DoString(const char* str, const char* chunkName = nullptr);
 	void PrintGCCount(const char* what = nullptr);
 	void PrintError();
 
+	Ptr<LuaTable> Require(const char* str,const char* moduleName);
 	Ptr<LuaTable> Require(string name);
 	Ptr<LuaTable> GetTable(string name);
 private:

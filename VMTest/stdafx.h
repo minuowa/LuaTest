@@ -23,6 +23,13 @@ extern "C" {
 }
 #endif
 
+#include <list>
+#include <map>
+#include <string>
+using namespace std;
+#include <assert.h>
+
+
 #include "VM.h"
 
 

@@ -3,6 +3,12 @@ d:\project\luatest\vm\debug\vm.pdb
 d:\project\luatest\vm\debug\vm.idb
 d:\project\luatest\vm\debug\stdafx.obj
 d:\project\luatest\vm\debug\allocater.obj
+d:\project\luatest\vm\debug\functiontaker.obj
+d:\project\luatest\vm\debug\luacomponent.obj
+d:\project\luatest\vm\debug\luamodule.obj
+d:\project\luatest\vm\debug\luamodulemanager.obj
+d:\project\luatest\vm\debug\luatable.obj
+d:\project\luatest\vm\debug\luavalue.obj
 d:\project\luatest\vm\debug\main.obj
 d:\project\luatest\vm\debug\vm.obj
 d:\project\luatest\debug\vm.lib

@@ -2,6 +2,7 @@
 #include "VM.h"
 #include "Allocater.h"
 #include "LuaTable.h"
+#include <fstream>
 
 
 VM::VM()
@@ -91,6 +92,24 @@ Ptr<LuaTable> VM::Require(string name)
 	return this->GetTable(name);
 }
 
+Ptr<LuaTable> VM::Require(const char* str, const char* moduleName)
+{
+	if (!str || !moduleName)
+		return nullptr;
+
+	string filename = moduleName;
+	if (string::npos == filename.find(FileExtension))
+		filename += FileExtension;
+
+	std::ofstream of(filename);
+	of << str;
+	of.close();
+
+	Ptr<LuaTable> m = Require(moduleName);
+	remove(filename.c_str());
+	return m;
+}
+
 Ptr<LuaTable> VM::GetTable(string name)
 {
 	LuaTable* ret = nullptr;
@@ -135,12 +154,18 @@ bool VM::DoFile(const char* filename)
 	return true;
 }
 
-bool VM::DoString(const char* str)
+bool VM::DoString(const char* str, const char* chunkName /*= nullptr*/)
 {
-	if (luaL_dostring(mState, str) != RetSucess)
+	if( luaL_loadbuffer(mState, str, strlen(str), chunkName) != RetSucess)
 	{
 		PrintError();
 		return false;
 	}
+	if (lua_pcall(mState, 0, LUA_MULTRET, 0) != RetSucess)
+	{
+		PrintError();
+		return false;
+	}
+	
 	return true;
 }

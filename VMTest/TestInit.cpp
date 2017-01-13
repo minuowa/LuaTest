@@ -14,12 +14,8 @@ namespace VMTest
 			VM vm;
 			vm.Open();
 			Assert::IsTrue(vm.GetState());
-			//Assert::IsTrue(547 == vm.GCBitCount());
-			vm.GC();
-			//Assert::IsTrue(547 == vm.GCBitCount());
 			vm.Close();
 			Assert::IsFalse(vm.GetState());
 		}
-
 	};
 }
