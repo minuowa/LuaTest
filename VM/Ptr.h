@@ -1,58 +1,48 @@
 #pragma once
 template<typename T>
-class Ptr
-{
-private:
-	T* mObject;
-public: 
-	Ptr(T* obj)
-		:mObject(obj)
-	{
-		if (mObject)
-			mObject->AddReference();
-	}
+class Ptr {
+  private:
+    T* object_;
+  public:
+    Ptr( T* obj )
+        : object_( obj ) {
+        if ( object_ )
+            object_->AddReference();
+    }
 
-	Ptr(Ptr<T>& ptr)
-		:mObject(ptr.GetObject())
-	{
-		if (mObject)
-			mObject->AddReference();
-	}
+    Ptr( Ptr<T>& ptr )
+        : object_( ptr.GetObject() ) {
+        if ( object_ )
+            object_->AddReference();
+    }
 
-	Ptr operator=(Ptr<T> ptr)
-	{
-		this->Dec();
-		mObject = ptr.GetObject();
-		if (mObject)
-			mObject->AddReference();
-	}
+    Ptr operator=( Ptr<T> ptr ) {
+        this->Dec();
+        object_ = ptr.GetObject();
+        if ( object_ )
+            object_->AddReference();
+    }
 
-	T* operator->()
-	{
-		return mObject;
-	}
+    T* operator->() {
+        return object_;
+    }
 
-	~Ptr()
-	{
-		this->Dec();
-	}
-public:
-	T* GetObject()
-	{
-		return mObject;
-	}
-	bool Valid()
-	{
-		return mObject;
-	}
-private:
-	void Dec()
-	{
-		if (mObject&&mObject->DecReference() == 0)
-		{
-			delete mObject;
-			mObject = nullptr;
-		}
-	}
+    ~Ptr() {
+        this->Dec();
+    }
+  public:
+    T* GetObject() {
+        return object_;
+    }
+    bool Valid() {
+        return object_;
+    }
+  private:
+    void Dec() {
+        if ( object_ && object_->DecReference() == 0 ) {
+            delete object_;
+            object_ = nullptr;
+        }
+    }
 };
 

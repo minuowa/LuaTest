@@ -36,5 +36,6 @@ extern "C" {
 #include <string>
 using namespace std;
 #include <assert.h>
+#include "Fun.h"
 
 

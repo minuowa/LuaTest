@@ -3,15 +3,15 @@
 class LuaComponent
 {
 public:
-	LuaComponent();
-	~LuaComponent();
+    LuaComponent();
+    ~LuaComponent();
 public:
-	string filename;
+    string filename;
 private:
-	LuaTable* mInstance;
-public: 
-	virtual void Awake();
-	virtual void Update();
-	virtual void OnDestroy();
+    LuaTable* mInstance;
+public:
+    virtual void Awake();
+    virtual void Update();
+    virtual void OnDestroy();
 };
 

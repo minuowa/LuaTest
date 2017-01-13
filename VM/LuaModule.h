@@ -1,11 +1,12 @@
 #pragma once
 #include "LuaTable.h"
-class LuaModule
-{
-public:
-	LuaModule();
-	~LuaModule();
-private:
-	LuaTable* mLuaValue;
+#include "Ptr.h"
+class LuaModule {
+  public:
+    LuaModule(const char* name,Ptr<LuaTable> luaValue);
+    ~LuaModule();
+  private:
+    string mName;
+    Ptr<LuaTable> mLuaValue;
 };
 

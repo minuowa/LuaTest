@@ -2,10 +2,13 @@
 #include "LuaModule.h"
 
 
-LuaModule::LuaModule()
-{
-}
 
+LuaModule::LuaModule(const char* name, Ptr<LuaTable> luaValue) 
+	:mName(name)
+	, mLuaValue(luaValue)
+{
+
+}
 
 LuaModule::~LuaModule()
 {
