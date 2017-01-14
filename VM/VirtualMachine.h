@@ -3,6 +3,8 @@
 #include "Ptr.h"
 #include "VirtualFile.h"
 #include "ModuleManager.h"
+#include "LuaComponent.h"
+
 class Allocater;
 
 class VirtualMachine {
@@ -11,39 +13,39 @@ class VirtualMachine {
     ~VirtualMachine();
   public:
     lua_State* GetState();
-    static VirtualFile* GetVirtualFile( const char* fileName );
-    static int MyLoader( lua_State * pState );
+    static VirtualFile* GetVirtualFile(const char* fileName);
+    static int MyLoader(lua_State * pState);
 
     bool Open();
     void Close();
 
     void GC();
     int GCBitCount();
-    void* Allocate( void *ptr, size_t osize, size_t nsize );
+    void* Allocate(void *ptr, size_t osize, size_t nsize);
 
     void AddLoader();
-    void PrintGCCount( const char* what = nullptr );
+    void PrintGCCount(const char* what = nullptr);
     void PrintError();
+    void PrintSnapshot();
+    void PrintTop();
 
-    bool DoFile( const char* filename );
-    bool DoString( const char* str, const char* chunkName = nullptr );
+    bool DoFile(const char* filename);
+    bool DoString(const char* str, const char* chunkName = nullptr);
 
-    Ptr<LuaTable> Require( const char* str, const char* moduleName );
-    Ptr<LuaTable> Require( string name );
-    Ptr<LuaTable> GetTable( string name );
+    Ptr<LuaTable> Require(const char* str, const char* moduleName);
+    Ptr<LuaTable> Require(string name);
+    Ptr<LuaTable> GetTable(string name);
     Ptr<LuaTable> CreateTable();
-    void SetMetatable(Ptr<LuaTable> a, Ptr<LuaTable> b);
-    void SetTopValue(const char* key, lua_Number value, int index = -2);
-    void SetTopValue(const char* key, const char* value, int index = -2);
-    void SetTopValue(const char* key, Ptr<LuaTable> value, int index = -2);
+    void UnloadModule(const char* moduleName);
 
     ModuleManager& GetModuleManager();
   private:
     bool InitState();
-
   public:
-    const string FileExtension = ".lua";
+    const string kFileExtension = ".lua";
     static const int kRetSucess = 0;
+  public:
+    static VirtualMachine* Instance;
   private:
     lua_State* state_;
     Allocater* allocater_;

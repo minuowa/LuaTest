@@ -4,6 +4,7 @@
 #include "LuaTable.h"
 #include <fstream>
 #include "Fun.h"
+#include <iostream>
 
 
 map<string, VirtualFile*> VirtualMachine::files_;
@@ -12,6 +13,7 @@ VirtualMachine::VirtualMachine()
     : state_( nullptr )
     , allocater_( nullptr )
     , module_manager_( this ) {
+    Instance = this;
 }
 
 
@@ -82,7 +84,20 @@ void VirtualMachine::PrintError() {
     lua_pop( state_, 1 );
 }
 
-Ptr<LuaTable> VirtualMachine::Require( string name ) {
+void VirtualMachine::PrintSnapshot() {
+    int base = lua_gettop(state_);
+    for (int i = base; i >= 0; --i) {
+        PrintLuaValue(state_, i);
+    }
+}
+
+
+
+void VirtualMachine::PrintTop() {
+    PrintLuaValue(state_, -1);
+}
+
+Ptr<LuaTable> VirtualMachine::Require(string name) {
     string cmd;
     cmd += "require";
     cmd += " '";
@@ -124,28 +139,19 @@ Ptr<LuaTable> VirtualMachine::CreateTable() {
     return ret;
 }
 
-void VirtualMachine::SetMetatable(Ptr<LuaTable> a, Ptr<LuaTable> b) {
-    a->Push();
-    b->Push();
-    lua_setmetatable(state_, -2);
-}
+void VirtualMachine::UnloadModule(const char* moduleName) {
+    string cmd;
+    cmd += "package.loaded['";
+    cmd += moduleName;
+    cmd += "']=nil\n";
 
-void VirtualMachine::SetTopValue(const char* key, lua_Number value, int index /*= -2*/) {
-    lua_pushnumber(state_, value);
-    lua_setfield(state_, index, key);
-}
+    cmd += "_G['";
+    cmd += moduleName;
+    cmd += "']=nil\n";
 
-void VirtualMachine::SetTopValue(const char* key, Ptr<LuaTable> value, int index /*= -2*/) {
-    if (value.Valid())
-        value->Push();
-    else
-        lua_pushnil(state_);
-    lua_setfield(state_, index, key);
-}
+    DoString(cmd.c_str());
 
-void VirtualMachine::SetTopValue(const char* key, const char* value, int index /*= -2*/) {
-    lua_pushstring(state_, value);
-    lua_setfield(state_, index, key);
+    cmd.clear();
 }
 
 ModuleManager& VirtualMachine::GetModuleManager() {
@@ -158,9 +164,12 @@ bool VirtualMachine::InitState() {
         this->PrintGCCount( "Open Lua" );
         lua_atpanic( state_, &panic );
         luaL_openlibs( state_ );
+        lua_pop(state_, 1);
     }
     return state_ != nullptr;
 }
+
+VirtualMachine* VirtualMachine::Instance = nullptr;
 
 int VirtualMachine::GCBitCount() {
     return lua_gc( state_, LUA_GCCOUNTB, 0 );

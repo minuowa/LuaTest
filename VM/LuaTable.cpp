@@ -2,26 +2,22 @@
 #include "LuaTable.h"
 LuaTable::LuaTable( lua_State* state, int reference )
     : LuaValue( state, reference ) {
-
 }
 
 LuaTable::~LuaTable() {
 }
 
-void LuaTable::Print() {
 
+
+void LuaTable::SetValue(const char* key, Ptr<LuaTable> value) {
+    this->_pushthis();
+    this->_pushvalue(value);
+    this->_setkeyvalue(key);
 }
 
-
-void LuaTable::SetValue(const char* name, lua_Number value) {
-    this->Push();
-}
-
-void LuaTable::SetValue(const char* name, const char* value) {
-
-}
-
-void LuaTable::SetValue(const char* name, Ptr<LuaTable> value) {
-
+void LuaTable::SetMetatable(Ptr<LuaTable> meta) {
+    this->_pushthis();
+    this->_pushvalue(meta);
+    this->_set_meta();
 }
 

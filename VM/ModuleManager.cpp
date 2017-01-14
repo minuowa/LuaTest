@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ModuleManager.h"
 #include "VirtualMachine.h"
+#include "LuaComponent.h"
 
 
 
@@ -24,6 +25,24 @@ Ptr<LuaTable> ModuleManager::CreateInstance(const char* moduleName) {
     }
 
     auto instance = virtual_machine_->CreateTable();
+    auto meta = virtual_machine_->CreateTable();
+    meta->SetValue("__index", module->GetModuleTable());
+    instance->SetMetatable(meta);
+    return instance;
+}
 
-    return nullptr;
+void ModuleManager::ReleaseInstance(LuaComponent* com) {
+    if (!com)
+        return;
+    auto instance = com->GetLuaInstance();
+    if (!instance.Valid())
+        return;
+    instance->SetMetatable(nullptr);
+    LuaModule* module = nullptr;
+    dTryGetValue(modules_, com->filename.c_str(), module);
+    module->ReleaseInstance(instance);
+}
+
+void ModuleManager::Destroy() {
+    dDeleteMap(modules_);
 }

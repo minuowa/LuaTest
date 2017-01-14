@@ -30,7 +30,7 @@ using namespace std;
 #include <assert.h>
 
 
-#include "VM.h"
+#include "VirtualMachine.h"
 
 
 

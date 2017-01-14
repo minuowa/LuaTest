@@ -1,17 +1,18 @@
 #pragma once
 #include "LuaTable.h"
-class LuaComponent
-{
-public:
+class LuaComponent {
+  public:
     LuaComponent();
     ~LuaComponent();
-public:
-    string filename;
-private:
-    LuaTable* mInstance;
-public:
+  public:
+    Ptr<LuaTable>& GetLuaInstance();
+    bool Initialize();
     virtual void Awake();
     virtual void Update();
     virtual void OnDestroy();
+  public:
+    string filename;
+  private:
+    Ptr<LuaTable> luainstance_;
 };
 

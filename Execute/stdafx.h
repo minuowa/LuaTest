@@ -30,5 +30,6 @@ extern "C" {
 #include <string>
 using namespace std;
 #include <assert.h>
+#include <iostream>
 
-#include "VM.h"
+#include "VirtualMachine.h"

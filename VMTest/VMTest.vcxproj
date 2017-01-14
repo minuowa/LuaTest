@@ -169,6 +169,7 @@
     <ClCompile Include="TestModule.cpp" />
     <ClCompile Include="TestFile.cpp" />
     <ClCompile Include="TestInit.cpp" />
+    <ClCompile Include="TestModuleManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

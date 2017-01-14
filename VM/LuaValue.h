@@ -1,22 +1,45 @@
 #pragma once
+#include "Ptr.h"
+class LuaTable;
+
 class LuaValue {
   public:
     LuaValue(lua_State* state, int reference);
-    ~LuaValue();
+    virtual ~LuaValue();
   public:
-    void Push();
     int GetReferenceCount();
     int DecReference();
     int AddReference();
-    lua_Number GetNumber(const char* name);
-    string GetString(const char* name);
 
+    void PrintAddress();
+
+    lua_Number GetNumber(const char* key);
+    string GetString(const char* key);
   protected:
-    void GetField(const char* name);
+    void _setkeyvalue(const char* key);
+    void _pushthis();
+    void _getkey(const char* name);
+    void _pushvalue(const char* value);
+    void _pushvalue(lua_Number value);
+    void _pushvalue(Ptr<LuaTable> value);
+    void _clear();
+    void _set_meta();
 
+    int _type();
+    template<typename T> T _return() { }
+    template<> lua_Number _return() {
+        auto ret = lua_tonumber(state_, -stack_count_);
+        return ret;
+    }
+    template<> const char* _return() {
+        auto ret = lua_tostring(state_, -stack_count_);
+        return ret;
+    }
   private:
-    int mReference;
-    int mLuaReference;
-    lua_State* mState;
+    lua_State* state_;
+  private:
+    int reference_;
+    int lua_reference_;
+    static int stack_count_;
 };
 

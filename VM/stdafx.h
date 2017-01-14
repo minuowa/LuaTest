@@ -36,6 +36,20 @@ extern "C" {
 #include <string>
 using namespace std;
 #include <assert.h>
+#include <iostream>
 #include "Fun.h"
 
+enum LuaType {
+    TNONE = (-1)
+    , TNIL
+    , TBOOLEAN
+    , TLIGHTUSERDATA
+    , TNUMBER
+    , TSTRING
+    , TTABLE
+    , TFUNCTION
+    , TUSERDATA
+    , TTHREAD
+};
+void PrintLuaValue(lua_State* state_, int i);
 

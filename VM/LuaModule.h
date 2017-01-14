@@ -1,12 +1,16 @@
 #pragma once
-#include "LuaTable.h"
 #include "Ptr.h"
+class LuaTable;
 class LuaModule {
   public:
-    LuaModule(const char* name,Ptr<LuaTable> luaValue);
+    LuaModule(const char* name, Ptr<LuaTable> luaValue);
     ~LuaModule();
+  public:
+    Ptr<LuaTable>& GetModuleTable();
+    void ReleaseInstance(Ptr<LuaTable>& object);
   private:
-    string mName;
-    Ptr<LuaTable> mLuaValue;
+    string name_;
+    Ptr<LuaTable> module_table;
+    list<Ptr<LuaTable>> object_instances_;
 };
 
