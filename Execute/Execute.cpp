@@ -12,42 +12,28 @@ int main() {
 				Name='FFF'\
 				";
 
-    const char* kPrintRegist = "\
-	for k,v in pairs(debug.getregistry()) do\
-		print(k, v)\
-    end\
-	print('----------------')\
-";
-
     const char* kFileName = "login";
 
-    VirtualMachine vm;
-    vm.Open();
     {
-        vm.Require(kBuffer, kFileName);
+        VirtualMachine vm;
+        vm.Open();
+        auto gt = vm.Require(kBuffer, kFileName);
 
         LuaComponent com;
+        com.virtual_machine = &vm;
         com.filename = kFileName;
+
+
         Assert::IsTrue(com.Initialize());
-        vm.DoString(kPrintRegist);
-        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
+        vm.PrintTable(gt);
+
+        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 2);
         com.OnDestroy();
-        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 0);
-
-        //vm.GC();
-        //vm.PrintGCCount("Closesss");
+        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
+        vm.GetModuleManager().Destroy();
+        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
     }
-    vm.GetModuleManager().Destroy();
-    vm.UnloadModule(kFileName);
-    vm.DoString(kPrintRegist);
 
-    /*   vm.GC();
-    vm.GC();
-    vm.GC();
-    vm.GC();
-    vm.GC();
-    vm.GC();*/
-    vm.PrintGCCount("Closesss");
     return 0;
 }
 

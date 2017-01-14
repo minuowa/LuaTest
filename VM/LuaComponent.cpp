@@ -4,34 +4,30 @@
 
 
 LuaComponent::LuaComponent()
-    : luainstance_(nullptr) {
+    : luainstance_(nullptr)
+    , virtual_machine(nullptr) {
 }
-
 
 LuaComponent::~LuaComponent() {
-    this->OnDestroy();
 }
 
-Ptr<LuaTable>& LuaComponent::GetLuaInstance() {
+const Ptr<LuaTable>& LuaComponent::GetLuaInstance() const {
     return luainstance_;
 }
 
 bool LuaComponent::Initialize() {
-    luainstance_ = VirtualMachine::Instance->GetModuleManager().CreateInstance(filename.c_str());
+    luainstance_ = virtual_machine->GetModuleManager().CreateInstance(filename.c_str());
     return luainstance_.Valid();
 }
 
 void LuaComponent::Awake() {
-
 }
 
 void LuaComponent::Update() {
-
 }
 
 void LuaComponent::OnDestroy() {
     if (!luainstance_.Valid())
         return;
-    VirtualMachine::Instance->GetModuleManager().ReleaseInstance(this);
-    luainstance_->DecReference();
+    virtual_machine->GetModuleManager().ReleaseInstance(this);
 }

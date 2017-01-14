@@ -15,28 +15,15 @@ ModuleManager::~ModuleManager() {
 }
 
 Ptr<LuaTable> ModuleManager::CreateInstance(const char* moduleName) {
-    LuaModule* module = nullptr;
-    if (!dTryGetValue(modules_, moduleName, module)) {
-        Ptr<LuaTable> luainstance = virtual_machine_->Require(moduleName);
-        if (!luainstance.Valid())
-            return nullptr;
-        module = new LuaModule(moduleName, luainstance);
-        modules_.insert(make_pair(moduleName, module));
-    }
-
-    auto instance = virtual_machine_->CreateTable();
-    auto meta = virtual_machine_->CreateTable();
-    meta->SetValue("__index", module->GetModuleTable());
-    instance->SetMetatable(meta);
-    return instance;
+    LuaModule* module = this->Get(moduleName);
+    return module ? module->CreateInstance() : nullptr;
 }
 
 void ModuleManager::ReleaseInstance(LuaComponent* com) {
-    if (!com)
+    if (com == nullptr)
         return;
     auto instance = com->GetLuaInstance();
-    if (!instance.Valid())
-        return;
+    assert(instance.Valid());
     instance->SetMetatable(nullptr);
     LuaModule* module = nullptr;
     dTryGetValue(modules_, com->filename.c_str(), module);
@@ -45,4 +32,16 @@ void ModuleManager::ReleaseInstance(LuaComponent* com) {
 
 void ModuleManager::Destroy() {
     dDeleteMap(modules_);
+}
+
+LuaModule* ModuleManager::Get(const char* name, bool require /*= true*/) {
+    LuaModule* module = nullptr;
+    if (!dTryGetValue(modules_, name, module) && require) {
+        Ptr<LuaTable> luainstance = virtual_machine_->Require(name);
+        if (!luainstance.Valid())
+            return nullptr;
+        module = new LuaModule(name, luainstance);
+        modules_.insert(make_pair(name, module));
+    }
+    return module;
 }

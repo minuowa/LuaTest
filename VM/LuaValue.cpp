@@ -15,11 +15,15 @@ LuaValue::~LuaValue() {
     lua_unref(state_, lua_reference_);
 }
 
-void LuaValue::_setkeyvalue( const char* key ) {
+lua_State* LuaValue::GetState() const {
+    return state_;
+}
+
+void LuaValue::_setkeyvalue(const char* key) {
     lua_setfield(state_, -stack_count_, key);
 }
 
-void LuaValue::_pushthis() {
+void LuaValue::_pushself() {
     lua_rawgeti(state_, LUA_REGISTRYINDEX, lua_reference_);
     stack_count_++;
 }
@@ -41,7 +45,7 @@ void LuaValue::_pushvalue(const char* value) {
 
 void LuaValue::_pushvalue(Ptr<LuaTable> value) {
     if (value.Valid())
-        value->_pushthis();
+        value->_pushself();
     else {
         lua_pushnil(state_);
         stack_count_++;
@@ -66,7 +70,7 @@ void LuaValue::_set_meta() {
 
 int LuaValue::stack_count_ = 0;
 
-int LuaValue::GetReferenceCount() {
+const int LuaValue::GetReferenceCount() const {
     return reference_;
 }
 
@@ -80,13 +84,16 @@ int LuaValue::AddReference() {
 
 
 void LuaValue::PrintAddress() {
-    this->_pushthis();
+    this->_pushself();
     ::PrintLuaValue(state_, -stack_count_);
     this->_clear();
 }
 
+void LuaValue::Print() {
+}
+
 lua_Number LuaValue::GetNumber(const char* key) {
-    this->_pushthis();
+    this->_pushself();
     this->_getkey(key);
     assert(LUA_TNUMBER == _type());
     auto ret = _return<lua_Number>();
@@ -95,7 +102,7 @@ lua_Number LuaValue::GetNumber(const char* key) {
 }
 
 std::string LuaValue::GetString(const char* key) {
-    this->_pushthis();
+    this->_pushself();
     this->_getkey(key);
     assert(LUA_TSTRING == _type());
     auto ret = _return<const char*>();

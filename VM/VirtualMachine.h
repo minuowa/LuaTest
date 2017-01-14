@@ -28,6 +28,7 @@ class VirtualMachine {
     void PrintError();
     void PrintSnapshot();
     void PrintTop();
+    void PrintTable(const Ptr<LuaTable>& table);
 
     bool DoFile(const char* filename);
     bool DoString(const char* str, const char* chunkName = nullptr);
@@ -35,7 +36,6 @@ class VirtualMachine {
     Ptr<LuaTable> Require(const char* str, const char* moduleName);
     Ptr<LuaTable> Require(string name);
     Ptr<LuaTable> GetTable(string name);
-    Ptr<LuaTable> CreateTable();
     void UnloadModule(const char* moduleName);
 
     ModuleManager& GetModuleManager();

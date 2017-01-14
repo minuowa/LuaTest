@@ -1,11 +1,14 @@
 #pragma once
 #include "LuaTable.h"
+class VirtualMachine;
 class LuaComponent {
   public:
     LuaComponent();
     ~LuaComponent();
   public:
-    Ptr<LuaTable>& GetLuaInstance();
+    VirtualMachine* virtual_machine;
+  public:
+    const Ptr<LuaTable>& GetLuaInstance() const;
     bool Initialize();
     virtual void Awake();
     virtual void Update();

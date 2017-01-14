@@ -8,14 +8,16 @@ class LuaTable : public LuaValue {
     LuaTable(lua_State* state, int reference);
     ~LuaTable();
   public:
+    static Ptr<LuaTable> Create(lua_State* state);
 
     void SetValue(const char* key, Ptr<LuaTable> value);
     template<typename T> void SetValue(const char* key, T value) {
-        this->_pushthis();
+        this->_pushself();
         this->_pushvalue(value);
         this->_setkeyvalue(key);
         this->_clear();
     }
-    void SetMetatable( Ptr<LuaTable> meta);
+    virtual void Print()override;
+    void SetMetatable(Ptr<LuaTable> meta);
 };
 

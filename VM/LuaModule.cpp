@@ -6,19 +6,26 @@
 
 LuaModule::LuaModule(const char* name, Ptr<LuaTable> module_instance)
     : name_(name)
-    , module_table(module_instance) {
-
+    , module_table_(module_instance) {
 }
 
 LuaModule::~LuaModule() {
-    module_table->DecReference();
+    assert(object_instances_.empty());
 }
 
-Ptr<LuaTable>& LuaModule::GetModuleTable() {
-    return module_table;
+const Ptr<LuaTable>& LuaModule::GetModuleTable()const {
+    return module_table_;
+}
+
+Ptr<LuaTable> LuaModule::CreateInstance() {
+    auto ret = LuaTable::Create(module_table_->GetState());
+    auto meta = LuaTable::Create(module_table_->GetState());
+    meta->SetValue("__index", module_table_);
+    ret->SetMetatable(meta);
+    object_instances_.push_back(ret);
+    return ret;
 }
 
 void LuaModule::ReleaseInstance(Ptr<LuaTable>& object) {
     object_instances_.remove(object);
-    //module_table->DecReference();
 }

@@ -7,17 +7,18 @@ class LuaValue {
     LuaValue(lua_State* state, int reference);
     virtual ~LuaValue();
   public:
-    int GetReferenceCount();
+    lua_State* GetState() const;
+    const int GetReferenceCount() const;
     int DecReference();
     int AddReference();
 
     void PrintAddress();
-
+    virtual void Print();
     lua_Number GetNumber(const char* key);
     string GetString(const char* key);
   protected:
     void _setkeyvalue(const char* key);
-    void _pushthis();
+    void _pushself();
     void _getkey(const char* name);
     void _pushvalue(const char* value);
     void _pushvalue(lua_Number value);
@@ -35,7 +36,7 @@ class LuaValue {
         auto ret = lua_tostring(state_, -stack_count_);
         return ret;
     }
-  private:
+  protected:
     lua_State* state_;
   private:
     int reference_;

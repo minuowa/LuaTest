@@ -1,30 +1,31 @@
 #pragma once
+/// strong reference
 template<typename T>
 class Ptr {
   private:
     T* object_;
   public:
-    Ptr( T* obj )
-        : object_( obj ) {
-        if ( object_ )
+    Ptr(T* obj)
+        : object_(obj) {
+        if (object_)
             object_->AddReference();
     }
 
-    Ptr( Ptr<T>& ptr )
-        : object_( ptr.GetObject() ) {
-        if ( object_ )
+    Ptr(const Ptr<T>& ptr)
+        : object_(ptr.GetObject()) {
+        if (object_)
             object_->AddReference();
     }
 
-    Ptr& operator=( Ptr<T> ptr ) {
+    Ptr& operator=(Ptr<T> ptr) {
         this->Dec();
         object_ = ptr.GetObject();
-        if ( object_ )
+        if (object_)
             object_->AddReference();
         return *this;
     }
 
-    T* operator->() {
+    T* operator->() const {
         return object_;
     }
 
@@ -48,15 +49,16 @@ class Ptr {
     T* GetObject() const {
         return object_;
     }
-    bool Valid() {
-        return object_;
+    bool Valid() const {
+        return object_ != nullptr;
     }
-    void ClearObject() {
+    void ClearReference() {
+        this->Dec();
         object_ = nullptr;
     }
   private:
     void Dec() {
-        if ( object_ && object_->DecReference() == 0 ) {
+        if (object_ && object_->DecReference() == 0) {
             delete object_;
             object_ = nullptr;
         }

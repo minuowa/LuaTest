@@ -18,6 +18,7 @@ VirtualMachine::VirtualMachine()
 
 
 VirtualMachine::~VirtualMachine() {
+    Instance = nullptr;
     this->Close();
 }
 
@@ -97,6 +98,12 @@ void VirtualMachine::PrintTop() {
     PrintLuaValue(state_, -1);
 }
 
+
+void VirtualMachine::PrintTable(const Ptr<LuaTable>& table) {
+    if (table.Valid())
+        table->Print();
+}
+
 Ptr<LuaTable> VirtualMachine::Require(string name) {
     string cmd;
     cmd += "require";
@@ -129,13 +136,6 @@ Ptr<LuaTable> VirtualMachine::GetTable( string name ) {
         int ref = luaL_ref( state_, LUA_REGISTRYINDEX );
         ret = new LuaTable( state_, ref );
     }
-    return ret;
-}
-
-Ptr<LuaTable> VirtualMachine::CreateTable() {
-    lua_newtable( state_ );
-    int ref = luaL_ref( state_, LUA_REGISTRYINDEX );
-    LuaTable* ret = new LuaTable( state_, ref );
     return ret;
 }
 
