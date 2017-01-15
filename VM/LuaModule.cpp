@@ -2,6 +2,7 @@
 #include "LuaModule.h"
 #include "LuaTable.h"
 
+namespace Lua {
 
 
 LuaModule::LuaModule(const char* name, Ptr<LuaTable> module_instance)
@@ -28,4 +29,5 @@ Ptr<LuaTable> LuaModule::CreateInstance() {
 
 void LuaModule::ReleaseInstance(Ptr<LuaTable>& object) {
     object_instances_.remove(object);
+}
 }

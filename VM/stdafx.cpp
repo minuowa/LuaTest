@@ -8,41 +8,43 @@
 //而不是在此文件中引用
 
 
-void PrintLuaValue(lua_State* state_, int i) {
+std::string LuaToString(lua_State* state_, int i) {
     LuaType type = (LuaType)lua_type(state_, i);
+    string ret;
+    char buffer[256];
     switch (type) {
     case LuaType::TNONE:
-        printf("(%d)(None):%s", i, "None");
+        sprintf_s(buffer, "%s",  "None");
         break;
     case LuaType::TNIL:
-        printf("(%d)(Null):%s", i, "nil");
+        sprintf_s(buffer, "%s",  "nil");
         break;
     case LuaType::TBOOLEAN:
-        printf("(%d)(Bool):%s", i, lua_toboolean(state_, i) ? "true" : "false");
+        sprintf_s(buffer, "%s", lua_toboolean(state_, i) ? "true" : "false");
         break;
     case LuaType::TLIGHTUSERDATA:
-        printf("(%d)(LightUserData):0X%08X", i, lua_touserdata(state_, i));
+        sprintf_s(buffer, "0X%08X(lightUserData)", (unsigned int)lua_touserdata(state_, i));
         break;
     case LuaType::TNUMBER:
-        printf("(%d)(Number):%d", i, lua_tonumber(state_, i));
+        sprintf_s(buffer, "%lf", (double)lua_tonumber(state_, i));
         break;
     case LuaType::TSTRING:
-        printf("(%d)(String):%s", i, lua_tostring(state_, i));
+        sprintf_s(buffer, "\"%s\"", lua_tostring(state_, i));
         break;
     case LuaType::TTABLE:
-        printf("(%d)(Table):0X%08X", i, (int)lua_topointer(state_, i));
+        sprintf_s(buffer, "0X%08X(table)", (unsigned int)lua_topointer(state_, i));
         break;
     case LuaType::TFUNCTION:
-        printf("(%d)(Function):0X%08X", i, (int)lua_topointer(state_, i));
+        sprintf_s(buffer, "0X%08X(function)", (unsigned int)lua_topointer(state_, i));
         break;
     case LuaType::TUSERDATA:
-        printf("(%d)(UserData):0X%08X", i, (int)lua_topointer(state_, i));
+        sprintf_s(buffer, "0X%08X(userData)", (unsigned int)lua_touserdata(state_, i));
         break;
     case LuaType::TTHREAD:
-        printf("(%d)(Thread):0X%08X", i, (int)lua_topointer(state_, i));
+        sprintf_s(buffer, "0X%08X(thread)", (unsigned int)lua_topointer(state_, i));
         break;
     default:
         break;
     }
-    endl(std::cout);
+    return buffer;
 }

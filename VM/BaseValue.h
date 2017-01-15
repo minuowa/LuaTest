@@ -1,11 +1,13 @@
 #pragma once
 #include "Ptr.h"
+
+namespace Lua {
 class LuaTable;
 
-class LuaValue {
+class BaseValue {
   public:
-    LuaValue(lua_State* state, int reference);
-    virtual ~LuaValue();
+    BaseValue(lua_State* state, int reference);
+    virtual ~BaseValue();
   public:
     lua_State* GetState() const;
     const int GetReferenceCount() const;
@@ -13,7 +15,7 @@ class LuaValue {
     int AddReference();
 
     void PrintAddress();
-    virtual void Print();
+    virtual void Print(const char* tag = nullptr);
     lua_Number GetNumber(const char* key);
     string GetString(const char* key);
   protected:
@@ -27,7 +29,21 @@ class LuaValue {
     void _set_meta();
 
     int _type();
+
     template<typename T> T _return() { }
+
+    template<> int _return() {
+        return _return<lua_Number>();
+    }
+
+    template<> unsigned int _return() {
+        return _return<lua_Number>();
+    }
+
+    template<> float _return() {
+        return _return<lua_Number>();
+    }
+
     template<> lua_Number _return() {
         auto ret = lua_tonumber(state_, -stack_count_);
         return ret;
@@ -43,4 +59,6 @@ class LuaValue {
     int lua_reference_;
     static int stack_count_;
 };
+};
+
 

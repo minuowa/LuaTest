@@ -154,12 +154,12 @@
     <ClInclude Include="Allocater.h" />
     <ClInclude Include="Fun.h" />
     <ClInclude Include="FunctionTaker.h" />
-    <ClInclude Include="LuaComponent.h" />
-    <ClInclude Include="LuaFunction.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="LuaModule.h" />
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="LuaTable.h" />
-    <ClInclude Include="LuaValue.h" />
+    <ClInclude Include="BaseValue.h" />
     <ClInclude Include="Ptr.h" />
     <ClInclude Include="VirtualFile.h" />
     <ClInclude Include="VirtualMachine.h" />
@@ -169,14 +169,13 @@
   <ItemGroup>
     <ClCompile Include="Allocater.cpp" />
     <ClCompile Include="FunctionTaker.cpp" />
-    <ClCompile Include="LuaComponent.cpp" />
-    <ClCompile Include="LuaFunction.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Function.cpp" />
     <ClCompile Include="LuaModule.cpp" />
     <ClCompile Include="ModuleManager.cpp" />
     <ClCompile Include="LuaTable.cpp" />
-    <ClCompile Include="LuaValue.cpp" />
+    <ClCompile Include="BaseValue.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="VirtualFile.cpp" />
     <ClCompile Include="VirtualMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -3,10 +3,11 @@
 #include "Ptr.h"
 #include "VirtualFile.h"
 #include "ModuleManager.h"
-#include "LuaComponent.h"
+#include "Component.h"
+#include "Function.h"
 
+namespace Lua {
 class Allocater;
-
 class VirtualMachine {
   public:
     VirtualMachine();
@@ -28,28 +29,27 @@ class VirtualMachine {
     void PrintError();
     void PrintSnapshot();
     void PrintTop();
-    void PrintTable(const Ptr<LuaTable>& table);
+    void PrintTable(const Ptr<LuaTable>& table, const char* tag = nullptr);
 
-    bool DoFile(const char* filename);
     bool DoString(const char* str, const char* chunkName = nullptr);
 
-    Ptr<LuaTable> Require(const char* str, const char* moduleName);
-    Ptr<LuaTable> Require(string name);
-    Ptr<LuaTable> GetTable(string name);
+    bool DoFile(const char* filename, const char* content = nullptr);
+    Ptr<LuaTable> Require(const char* filename, const char* content = nullptr);
+    Ptr<LuaTable> GetTable(const char* name);
+    Ptr<Function> GetFunction(const char* name);
     void UnloadModule(const char* moduleName);
 
     ModuleManager& GetModuleManager();
   private:
     bool InitState();
+    void TryAddFile(const char* filename, const char* content);
   public:
     const string kFileExtension = ".lua";
     static const int kRetSucess = 0;
-  public:
-    static VirtualMachine* Instance;
   private:
     lua_State* state_;
     Allocater* allocater_;
     ModuleManager module_manager_;
     static map<string, VirtualFile*> files_;
 };
-
+};

@@ -10,9 +10,9 @@ public:
     TEST_METHOD(TestState) {
         VirtualMachine vm;
         vm.Open();
-        Assert::IsTrue(vm.GetState());
+        Assert::IsTrue(vm.GetState() != nullptr);
         vm.Close();
-        Assert::IsFalse(vm.GetState());
+        Assert::IsTrue(vm.GetState() == nullptr);
     }
 };
 }

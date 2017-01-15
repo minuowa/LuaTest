@@ -1,10 +1,11 @@
 #pragma once
 #include "LuaTable.h"
+namespace Lua {
 class VirtualMachine;
-class LuaComponent {
+class Component {
   public:
-    LuaComponent();
-    ~LuaComponent();
+    Component();
+    ~Component();
   public:
     VirtualMachine* virtual_machine;
   public:
@@ -18,4 +19,5 @@ class LuaComponent {
   private:
     Ptr<LuaTable> luainstance_;
 };
+}
 

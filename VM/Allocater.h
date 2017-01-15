@@ -1,4 +1,5 @@
 #pragma once
+namespace Lua {
 
 class Allocater {
   public:
@@ -12,4 +13,4 @@ class Allocater {
   private:
     void Remove(void* ptr, bool destroy);
 };
-
+}

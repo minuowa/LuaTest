@@ -1,8 +1,10 @@
 #pragma once
-class FunctionTaker
-{
-public:
-	FunctionTaker();
-	~FunctionTaker();
+namespace Lua {
+
+class FunctionTaker {
+  public:
+    FunctionTaker();
+    ~FunctionTaker();
 };
+}
 

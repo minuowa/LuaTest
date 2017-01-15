@@ -51,5 +51,5 @@ enum LuaType {
     , TUSERDATA
     , TTHREAD
 };
-void PrintLuaValue(lua_State* state_, int i);
+string LuaToString(lua_State* state_, int i);
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Allocater.h"
 #include <memory>
+namespace Lua {
 
 Allocater::Allocater()
     : size_(0) {
@@ -35,4 +36,5 @@ void Allocater::Remove(void* ptr, bool destroy) {
             free(ptr);
         ptr = nullptr;
     }
+}
 }

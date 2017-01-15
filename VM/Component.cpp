@@ -1,33 +1,35 @@
 #include "stdafx.h"
-#include "LuaComponent.h"
+#include "Component.h"
 #include "VirtualMachine.h"
 
+namespace Lua {
 
-LuaComponent::LuaComponent()
+Component::Component()
     : luainstance_(nullptr)
     , virtual_machine(nullptr) {
 }
 
-LuaComponent::~LuaComponent() {
+Component::~Component() {
 }
 
-const Ptr<LuaTable>& LuaComponent::GetLuaInstance() const {
+const Ptr<LuaTable>& Component::GetLuaInstance() const {
     return luainstance_;
 }
 
-bool LuaComponent::Initialize() {
+bool Component::Initialize() {
     luainstance_ = virtual_machine->GetModuleManager().CreateInstance(filename.c_str());
     return luainstance_.Valid();
 }
 
-void LuaComponent::Awake() {
+void Component::Awake() {
 }
 
-void LuaComponent::Update() {
+void Component::Update() {
 }
 
-void LuaComponent::OnDestroy() {
+void Component::OnDestroy() {
     if (!luainstance_.Valid())
         return;
     virtual_machine->GetModuleManager().ReleaseInstance(this);
+}
 }

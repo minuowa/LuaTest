@@ -1,49 +1,50 @@
 #include "stdafx.h"
-#include "LuaValue.h"
+#include "BaseValue.h"
 #include "LuaTable.h"
 
+namespace Lua {
 
-LuaValue::LuaValue(lua_State* state, int reference)
+BaseValue::BaseValue(lua_State* state, int reference)
     : reference_(0)
     , state_(state)
     , lua_reference_(reference) {
 
 }
 
-LuaValue::~LuaValue() {
+BaseValue::~BaseValue() {
     assert(reference_ == 0);
     lua_unref(state_, lua_reference_);
 }
 
-lua_State* LuaValue::GetState() const {
+lua_State* BaseValue::GetState() const {
     return state_;
 }
 
-void LuaValue::_setkeyvalue(const char* key) {
+void BaseValue::_setkeyvalue(const char* key) {
     lua_setfield(state_, -stack_count_, key);
 }
 
-void LuaValue::_pushself() {
+void BaseValue::_pushself() {
     lua_rawgeti(state_, LUA_REGISTRYINDEX, lua_reference_);
     stack_count_++;
 }
 
-void LuaValue::_getkey(const char* name) {
+void BaseValue::_getkey(const char* name) {
     lua_getfield(state_, -stack_count_, name);
 }
 
 
-void LuaValue::_pushvalue(lua_Number value) {
+void BaseValue::_pushvalue(lua_Number value) {
     lua_pushnumber(state_, value);
     stack_count_++;
 }
 
-void LuaValue::_pushvalue(const char* value) {
+void BaseValue::_pushvalue(const char* value) {
     lua_pushstring(state_, value);
     stack_count_++;
 }
 
-void LuaValue::_pushvalue(Ptr<LuaTable> value) {
+void BaseValue::_pushvalue(Ptr<LuaTable> value) {
     if (value.Valid())
         value->_pushself();
     else {
@@ -53,46 +54,46 @@ void LuaValue::_pushvalue(Ptr<LuaTable> value) {
 }
 
 
-void LuaValue::_clear() {
+void BaseValue::_clear() {
     lua_pop(state_, lua_gettop(state_));
     assert(lua_gettop(state_) == 0);
     stack_count_ = 0;
 }
 
-int LuaValue::_type() {
+int BaseValue::_type() {
     return lua_type(state_, -1);
 }
 
-void LuaValue::_set_meta() {
+void BaseValue::_set_meta() {
     lua_setmetatable(state_, -stack_count_);
     this->_clear();
 }
 
-int LuaValue::stack_count_ = 0;
+int BaseValue::stack_count_ = 0;
 
-const int LuaValue::GetReferenceCount() const {
+const int BaseValue::GetReferenceCount() const {
     return reference_;
 }
 
-int LuaValue::DecReference() {
+int BaseValue::DecReference() {
     return --reference_;
 }
 
-int LuaValue::AddReference() {
+int BaseValue::AddReference() {
     return ++reference_;
 }
 
 
-void LuaValue::PrintAddress() {
+void BaseValue::PrintAddress() {
     this->_pushself();
-    ::PrintLuaValue(state_, -stack_count_);
+    ::LuaToString(state_, -stack_count_);
     this->_clear();
 }
 
-void LuaValue::Print() {
+void BaseValue::Print(const char* tag/*=nullptr*/) {
 }
 
-lua_Number LuaValue::GetNumber(const char* key) {
+lua_Number BaseValue::GetNumber(const char* key) {
     this->_pushself();
     this->_getkey(key);
     assert(LUA_TNUMBER == _type());
@@ -101,11 +102,12 @@ lua_Number LuaValue::GetNumber(const char* key) {
     return ret;
 }
 
-std::string LuaValue::GetString(const char* key) {
+std::string BaseValue::GetString(const char* key) {
     this->_pushself();
     this->_getkey(key);
     assert(LUA_TSTRING == _type());
     auto ret = _return<const char*>();
     this->_clear();
     return ret;
+}
 }

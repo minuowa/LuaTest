@@ -1,9 +1,10 @@
 #pragma once
-#include "LuaValue.h"
+#include "BaseValue.h"
 #include "Ptr.h"
-class LuaTable : public LuaValue {
+namespace Lua {
+class LuaTable : public BaseValue {
   public:
-    typedef LuaValue base;
+    typedef BaseValue base;
   public:
     LuaTable(lua_State* state, int reference);
     ~LuaTable();
@@ -17,7 +18,8 @@ class LuaTable : public LuaValue {
         this->_setkeyvalue(key);
         this->_clear();
     }
-    virtual void Print()override;
+    virtual void Print(const char* tag = nullptr)override;
     void SetMetatable(Ptr<LuaTable> meta);
 };
+}
 

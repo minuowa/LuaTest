@@ -3,35 +3,24 @@
 
 #include "stdafx.h"
 #include "DAssert.h"
-
 int main() {
 
-    const char* kBuffer = "\
-				module(...,package.seeall)\
-				ID=100\
-				Name='FFF'\
-				";
+    const char* kBuffer = "ID=100\n"
+                          "Name = 'FFF'\n"
+                          "function OnOpenLua(id)\n"
+                          "	print(\"OnOpenLua\")\n"
+                          "	print(id)\n"
+                          "	return 10"
+                          "end\n";
 
     const char* kFileName = "login";
 
     {
         VirtualMachine vm;
         vm.Open();
-        auto gt = vm.Require(kBuffer, kFileName);
-
-        LuaComponent com;
-        com.virtual_machine = &vm;
-        com.filename = kFileName;
-
-
-        Assert::IsTrue(com.Initialize());
-        vm.PrintTable(gt);
-
-        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 2);
-        com.OnDestroy();
-        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
-        vm.GetModuleManager().Destroy();
-        Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
+        auto gt = vm.DoString( kBuffer);
+        auto fun = vm.GetFunction("OnOpenLua");
+        auto ret = fun->Call<int>();
     }
 
     return 0;

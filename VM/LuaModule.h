@@ -1,5 +1,6 @@
 #pragma once
 #include "Ptr.h"
+namespace Lua {
 class LuaTable;
 class LuaModule {
   public:
@@ -13,5 +14,6 @@ class LuaModule {
     string name_;
     Ptr<LuaTable> module_table_;
     list<Ptr<LuaTable>> object_instances_;
+};
 };
 
