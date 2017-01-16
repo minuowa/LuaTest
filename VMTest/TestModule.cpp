@@ -16,7 +16,7 @@ public:
 
         VirtualMachine vm;
         vm.Open();
-        Ptr<LuaTable> gt = vm.Require(buffer, "login");
+        Ptr<LuaTable> gt = vm.Require("login", buffer);
         assert(gt->GetNumber("ID") == 100);
         assert(gt->GetString("Name") == "FFF");
 

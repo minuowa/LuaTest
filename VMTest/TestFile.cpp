@@ -12,6 +12,5 @@ public:
         vm.Open();
         Assert::IsTrue(vm.DoFile("main.lua"));
     }
-
 };
 }

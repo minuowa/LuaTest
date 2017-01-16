@@ -69,6 +69,11 @@ void BaseValue::_set_meta() {
     this->_clear();
 }
 
+void BaseValue::_call(int argcount, int retcount) {
+    lua_call(state_, argcount, retcount);
+    stack_count_ = retcount;
+}
+
 int BaseValue::stack_count_ = 0;
 
 const int BaseValue::GetReferenceCount() const {

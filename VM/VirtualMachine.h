@@ -43,6 +43,7 @@ class VirtualMachine {
   private:
     bool InitState();
     void TryAddFile(const char* filename, const char* content);
+    void ClearStack();
   public:
     const string kFileExtension = ".lua";
     static const int kRetSucess = 0;

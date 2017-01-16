@@ -167,7 +167,7 @@ bool VirtualMachine::InitState() {
         this->PrintGCCount("Open Lua");
         lua_atpanic(state_, &panic);
         luaL_openlibs(state_);
-        lua_pop(state_, 1);
+        this->ClearStack();
     }
     return state_ != nullptr;
 }
@@ -184,6 +184,10 @@ void VirtualMachine::TryAddFile(const char* filename, const char* content) {
     }
 }
 
+
+void VirtualMachine::ClearStack() {
+    lua_pop(state_, lua_gettop(state_));
+}
 
 std::map<std::string, VirtualFile*> VirtualMachine::files_;
 

@@ -1,3 +1,4 @@
-function main(  )
-    print("lua start")
+function mainff(  )
+    print("mainlua")
 end
+mainff()

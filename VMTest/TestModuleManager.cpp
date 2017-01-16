@@ -7,7 +7,7 @@ namespace VMTest {
 TEST_CLASS(TestModuleManager) {
 public:
 
-    TEST_METHOD(Test) {
+    TEST_METHOD(Test_ModuleManager) {
 
         const char* kBuffer = "\
 				module(...,package.seeall)\
@@ -15,16 +15,14 @@ public:
 				Name='FFF'\
 				";
 
-
-
         const char* kFileName = "login";
 
         {
             VirtualMachine vm;
             vm.Open();
-            vm.Require(kBuffer, kFileName);
+            vm.Require(kFileName, kBuffer);
 
-            LuaComponent com;
+            Component com;
             com.virtual_machine = &vm;
             com.filename = kFileName;
 

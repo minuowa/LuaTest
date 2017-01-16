@@ -27,21 +27,23 @@ class BaseValue {
     void _pushvalue(Ptr<LuaTable> value);
     void _clear();
     void _set_meta();
-
+    void _call(int argcount, int retcount);
     int _type();
 
     template<typename T> T _return() { }
 
+    template<> void _return() {
+    }
     template<> int _return() {
-        return _return<lua_Number>();
+        return (int)_return<lua_Number>();
     }
 
     template<> unsigned int _return() {
-        return _return<lua_Number>();
+        return (unsigned int)_return<lua_Number>();
     }
 
     template<> float _return() {
-        return _return<lua_Number>();
+        return (float)_return<lua_Number>();
     }
 
     template<> lua_Number _return() {

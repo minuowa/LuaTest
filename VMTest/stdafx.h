@@ -32,6 +32,7 @@ using namespace std;
 
 #include "VirtualMachine.h"
 
+using namespace Lua;
 
 
 
