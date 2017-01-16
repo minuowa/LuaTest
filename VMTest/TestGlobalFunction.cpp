@@ -11,6 +11,9 @@ public:
 
         const char* kBuffer =
             "\
+function Main()\n\
+	print(\"MainXXX\")\n\
+end\n\
 function OnOpenLua(id)\n\
 	print(\"OnOpenLua\")\n\
 	print(id)\n\
@@ -29,7 +32,9 @@ end\n\
             vm.Open();
             auto gt = vm.DoString(kBuffer);
             {
-                auto fun = vm.GetFunction("OnOpenLua");
+                auto fun = vm.GetFunction("Main");
+                fun->Call();
+                fun = vm.GetFunction("OnOpenLua");
                 auto ret = fun->Call<int>(5);
                 Assert::IsTrue(ret == 5);
 

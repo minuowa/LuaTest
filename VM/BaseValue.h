@@ -30,7 +30,7 @@ class BaseValue {
     void _call(int argcount, int retcount);
     int _type();
 
-    template<typename T> T _return() { }
+    template<typename T = void> T _return() { }
 
     template<> void _return() {
     }
