@@ -30,18 +30,18 @@ end\n\
             auto gt = vm.DoString(kBuffer);
             {
                 auto fun = vm.GetFunction("OnOpenLua");
-                int ret = fun->CallRet<int, int>(5);
+                int ret = fun->Call<int, int>(5);
                 Assert::IsTrue(ret == 5);
 
-                ret = fun->CallRet<int, int>(6);
+                ret = fun->Call<int, int>(6);
                 Assert::IsTrue(ret == 6);
 
-                ret = fun->CallRet<int, int, int>(5, 6);
+                ret = fun->Call<int, int, int>(5, 6);
                 Assert::IsTrue(ret == 5);
             }
             {
                 auto fun = vm.GetFunction("OnOpenLua5");
-                auto ret = fun->CallRet<int>(1, 2, 3);
+                auto ret = fun->Call<int>(1, 2, 3);
                 Assert::IsTrue(ret == 6);
             }
 

@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Allocater.h" />
+    <ClInclude Include="ComponentManager.h" />
     <ClInclude Include="Fun.h" />
     <ClInclude Include="FunctionTaker.h" />
     <ClInclude Include="Component.h" />
@@ -160,7 +161,8 @@
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="LuaTable.h" />
     <ClInclude Include="BaseValue.h" />
-    <ClInclude Include="Ptr.h" />
+    <ClInclude Include="Pointer.h" />
+    <ClInclude Include="PtrBase.h" />
     <ClInclude Include="VirtualFile.h" />
     <ClInclude Include="VirtualMachine.h" />
     <ClInclude Include="stdafx.h" />
@@ -168,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Allocater.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
     <ClCompile Include="FunctionTaker.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Function.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="LuaTable.cpp" />
     <ClCompile Include="BaseValue.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PointerBase.cpp" />
     <ClCompile Include="VirtualMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

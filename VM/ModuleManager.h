@@ -1,6 +1,6 @@
 #pragma once
 #include "LuaTable.h"
-#include "Ptr.h"
+#include "Pointer.h"
 #include "LuaModule.h"
 namespace Lua {
 class VirtualMachine;
@@ -10,7 +10,7 @@ class ModuleManager {
     ModuleManager(VirtualMachine* owner);
     ~ModuleManager();
   public:
-    Ptr<LuaTable> CreateInstance(const char* moduleName);
+    Pointer<LuaTable> CreateInstance(const char* moduleName);
     void ReleaseInstance(Component* com);
     void Destroy();
     LuaModule* Get(const char* name, bool require = true);

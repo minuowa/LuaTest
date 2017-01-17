@@ -13,7 +13,7 @@ ModuleManager::~ModuleManager() {
     virtual_machine_ = nullptr;
 }
 
-Ptr<LuaTable> ModuleManager::CreateInstance(const char* moduleName) {
+Pointer<LuaTable> ModuleManager::CreateInstance(const char* moduleName) {
     LuaModule* module = this->Get(moduleName);
     return module ? module->CreateInstance() : nullptr;
 }
@@ -36,7 +36,7 @@ void ModuleManager::Destroy() {
 LuaModule* ModuleManager::Get(const char* name, bool require /*= true*/) {
     LuaModule* module = nullptr;
     if (!fun::try_get_map_value(modules_, name, module) && require) {
-        Ptr<LuaTable> luainstance = virtual_machine_->Require(name);
+        Pointer<LuaTable> luainstance = virtual_machine_->Require(name);
         if (!luainstance.Valid())
             return nullptr;
         module = new LuaModule(name, luainstance);

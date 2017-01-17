@@ -1,77 +1,63 @@
 #pragma once
-#include "Ptr.h"
+#include "Pointer.h"
+#include "PointerBase.h"
 
 namespace Lua {
 class LuaTable;
 class Function;
 
-class BaseValue {
+class BaseValue : public PointerBase {
   public:
     BaseValue(lua_State* state, int reference);
     virtual ~BaseValue();
   public:
     lua_State* GetState() const;
-    const int GetReferenceCount() const;
-    int DecReference();
-    int AddReference();
 
     void PrintAddress();
     virtual void Print(const char* tag = nullptr);
     lua_Number GetNumber(const char* key);
     string GetString(const char* key);
 
-    Ptr<Function> GetFunction(const char* name);
-  public:
+    Pointer<Function> GetFunction(const char* name);
+  protected:
     void _setkeyvalue(const char* key);
     void _pushself();
     void _getkey(const char* name);
     void _pushvalue(const char* value);
     void _pushvalue(lua_Number value);
-    void _pushvalue(Ptr<LuaTable> value);
+    void _pushvalue(Pointer<LuaTable> value);
     void _clear();
     void _set_meta();
     void _call(int argcount, int retcount);
     int _type();
 
-    Ptr<LuaTable> _return_table();
-    Ptr<Function> _return_function();
+    Pointer<LuaTable> _return_table();
+    Pointer<Function> _return_function();
+    const char* _return_str();
+    lua_Number _return_number();
 
-    template<typename T> T _return() { }
+    template<typename T = void> T _return() {
+        return (T)_return_number();
+    }
+
+    template<> const char* _return() {
+        return _return_str();
+    }
+
+    template<> Pointer<LuaTable> _return() {
+        return _return_table();
+    };
+
+    template<> Pointer<Function> _return() {
+        return _return_function();
+    };
 
     template<> void _return() {
     }
 
-    template<> int _return() {
-        return (int)_return<lua_Number>();
-    }
-
-    template<> unsigned int _return() {
-        return (unsigned int)_return<lua_Number>();
-    }
-
-    template<> float _return() {
-        return (float)_return<lua_Number>();
-    }
-
-    template<> lua_Number _return() {
-        auto ret = lua_tonumber(state_, -stack_count_);
-        return ret;
-    }
-    template<> const char* _return() {
-        auto ret = lua_tostring(state_, -stack_count_);
-        return ret;
-    }
-    template<> Ptr<LuaTable> _return() {
-        return _return_table();
-    };
-    template<> Ptr<Function> _return() {
-        return _return_function();
-    };
-
   protected:
     lua_State* state_;
   private:
-    int reference_;
     int lua_reference_;
     static int stack_count_;
 };

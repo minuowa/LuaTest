@@ -1,10 +1,11 @@
 #pragma once
 #include "LuaTable.h"
-#include "Ptr.h"
+#include "Pointer.h"
 #include "VirtualFile.h"
 #include "ModuleManager.h"
 #include "Component.h"
 #include "Function.h"
+#include "ComponentManager.h"
 
 namespace Lua {
 class Allocater;
@@ -30,17 +31,18 @@ class VirtualMachine {
     void PrintSnapshot() const;
     void PrintDebugRegistry() const;
     void PrintTop() const;
-    void PrintTable(const Ptr<LuaTable>& table, const char* tag = nullptr) const;
+    void PrintTable(const Pointer<LuaTable>& table, const char* tag = nullptr) const;
 
     bool DoString(const char* str, const char* chunkName = nullptr)const;
 
     bool DoFile(const char* filename, const char* content = nullptr);
-    Ptr<LuaTable> Require(const char* filename, const char* content = nullptr);
-    Ptr<LuaTable> GetGlobalTable(const char* name);
-    Ptr<Function> GetFunction(const char* name);
+    Pointer<LuaTable> Require(const char* filename, const char* content = nullptr);
+    Pointer<LuaTable> GetGlobalTable(const char* name);
+    Pointer<Function> GetFunction(const char* name);
     void UnloadModule(const char* moduleName);
 
     ModuleManager& GetModuleManager();
+    ComponentManager& GetComponentManager();
   private:
     bool InitState();
     void TryAddFile(const char* filename, const char* content);
@@ -52,6 +54,7 @@ class VirtualMachine {
     lua_State* state_;
     Allocater* allocater_;
     ModuleManager module_manager_;
+    ComponentManager component_manager_;
     static map<string, VirtualFile*> files_;
 };
 };

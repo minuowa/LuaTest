@@ -6,14 +6,12 @@
 namespace Lua {
 
 BaseValue::BaseValue(lua_State* state, int reference)
-    : reference_(0)
-    , state_(state)
+    : state_(state)
     , lua_reference_(reference) {
 
 }
 
 BaseValue::~BaseValue() {
-    assert(reference_ == 0);
     lua_unref(state_, lua_reference_);
 }
 
@@ -45,7 +43,7 @@ void BaseValue::_pushvalue(const char* value) {
     stack_count_++;
 }
 
-void BaseValue::_pushvalue(Ptr<LuaTable> value) {
+void BaseValue::_pushvalue(Pointer<LuaTable> value) {
     if (value.Valid())
         value->_pushself();
     else {
@@ -56,7 +54,10 @@ void BaseValue::_pushvalue(Ptr<LuaTable> value) {
 
 
 void BaseValue::_clear() {
-    lua_pop(state_, lua_gettop(state_));
+    int count = lua_gettop(state_);
+    if (count > 0) {
+        lua_pop(state_, count);
+    }
     assert(lua_gettop(state_) == 0);
     stack_count_ = 0;
 }
@@ -65,15 +66,25 @@ int BaseValue::_type() {
     return lua_type(state_, -1);
 }
 
-Ptr<LuaTable> BaseValue::_return_table() {
+Pointer<LuaTable> BaseValue::_return_table() {
     int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
     LuaTable* ret = new LuaTable(state_, ref);
     return ret;
 }
 
-Ptr<Function> BaseValue::_return_function() {
+Pointer<Function> BaseValue::_return_function() {
     int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
     Function* ret = new Function(state_, ref);
+    return ret;
+}
+
+const char* BaseValue::_return_str() {
+    auto ret = lua_tostring(state_, -stack_count_);
+    return ret;
+}
+
+lua_Number BaseValue::_return_number() {
+    auto ret = lua_tonumber(state_, -stack_count_);
     return ret;
 }
 
@@ -89,17 +100,6 @@ void BaseValue::_call(int argcount, int retcount) {
 
 int BaseValue::stack_count_ = 0;
 
-const int BaseValue::GetReferenceCount() const {
-    return reference_;
-}
-
-int BaseValue::DecReference() {
-    return --reference_;
-}
-
-int BaseValue::AddReference() {
-    return ++reference_;
-}
 
 
 void BaseValue::PrintAddress() {
@@ -132,7 +132,7 @@ std::string BaseValue::GetString(const char* key) {
 }
 
 
-Ptr<Function> BaseValue::GetFunction(const char* name) {
+Pointer<Function> BaseValue::GetFunction(const char* name) {
     this->_clear();
     this->_pushself();
     this->_getkey(name);

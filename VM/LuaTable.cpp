@@ -9,14 +9,14 @@ LuaTable::LuaTable(lua_State* state, int reference)
 LuaTable::~LuaTable() {
 }
 
-Ptr<LuaTable> LuaTable::Create(lua_State* state) {
+Pointer<LuaTable> LuaTable::Create(lua_State* state) {
     lua_newtable(state);
     int ref = luaL_ref(state, LUA_REGISTRYINDEX);
     LuaTable* ret = new LuaTable(state, ref);
     return ret;
 }
 
-void LuaTable::SetValue(const char* key, Ptr<LuaTable> value) {
+void LuaTable::SetValue(const char* key, Pointer<LuaTable> value) {
     this->_clear();
     this->_pushself();
     this->_pushvalue(value);
@@ -39,7 +39,7 @@ void LuaTable::Print(const char* tag/*=nullptr*/) {
     }
 }
 
-void LuaTable::SetMetatable(Ptr<LuaTable> meta) {
+void LuaTable::SetMetatable(Pointer<LuaTable> meta) {
     this->_clear();
     this->_pushself();
     this->_pushvalue(meta);

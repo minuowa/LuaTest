@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseValue.h"
-#include "Ptr.h"
+#include "Pointer.h"
 namespace Lua {
 class LuaTable : public BaseValue {
   public:
@@ -9,9 +9,9 @@ class LuaTable : public BaseValue {
     LuaTable(lua_State* state, int reference);
     ~LuaTable();
   public:
-    static Ptr<LuaTable> Create(lua_State* state);
+    static Pointer<LuaTable> Create(lua_State* state);
 
-    void SetValue(const char* key, Ptr<LuaTable> value);
+    void SetValue(const char* key, Pointer<LuaTable> value);
     template<typename T> void SetValue(const char* key, T value) {
         this->_pushself();
         this->_pushvalue(value);
@@ -19,7 +19,7 @@ class LuaTable : public BaseValue {
         this->_clear();
     }
     virtual void Print(const char* tag = nullptr)override;
-    void SetMetatable(Ptr<LuaTable> meta);
+    void SetMetatable(Pointer<LuaTable> meta);
 };
 }
 

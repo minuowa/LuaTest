@@ -55,6 +55,10 @@ void VirtualMachine::Close() {
     if (state_ == nullptr) {
         return;
     }
+
+    component_manager_.Destroy();
+    module_manager_.Destroy();
+
     this->GC();
     this->PrintGCCount("Close Lua");
     lua_close(state_);
@@ -104,7 +108,7 @@ void VirtualMachine::PrintTop() const {
 }
 
 
-void VirtualMachine::PrintTable(const Ptr<LuaTable>& table, const char* tag/*=nullptr*/)const {
+void VirtualMachine::PrintTable(const Pointer<LuaTable>& table, const char* tag/*=nullptr*/)const {
     if (table.Valid())
         table->Print(tag);
 }
@@ -120,7 +124,7 @@ bool VirtualMachine::DoFile(const char* filename, const char* content/*= nullptr
     return true;
 }
 
-Ptr<LuaTable> VirtualMachine::Require(const char* filename, const char* content/*= nullptr*/) {
+Pointer<LuaTable> VirtualMachine::Require(const char* filename, const char* content/*= nullptr*/) {
     if (content != nullptr)
         this->TryAddFile(filename, content);
 
@@ -133,7 +137,7 @@ Ptr<LuaTable> VirtualMachine::Require(const char* filename, const char* content/
     return this->GetGlobalTable(filename);
 }
 
-Ptr<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
+Pointer<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
     LuaTable* ret = nullptr;
     lua_getfield(state_, LUA_GLOBALSINDEX, name);
     if (lua_type(state_, -1) == LUA_TTABLE) {
@@ -143,8 +147,8 @@ Ptr<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
     return ret;
 }
 
-Ptr<Function> VirtualMachine::GetFunction(const char* name) {
-    Ptr<LuaTable> gtable = this->GetGlobalTable("_G");
+Pointer<Function> VirtualMachine::GetFunction(const char* name) {
+    Pointer<LuaTable> gtable = this->GetGlobalTable("_G");
     return gtable->GetFunction(name);
 }
 
@@ -163,6 +167,10 @@ void VirtualMachine::UnloadModule(const char* moduleName) {
 
 ModuleManager& VirtualMachine::GetModuleManager() {
     return module_manager_;
+}
+
+ComponentManager& VirtualMachine::GetComponentManager() {
+    return component_manager_;
 }
 
 bool VirtualMachine::InitState() {

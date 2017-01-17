@@ -1,23 +1,23 @@
 #pragma once
 /// strong reference
 template<typename T>
-class Ptr {
+class Pointer {
   private:
     T* object_;
   public:
-    Ptr(T* obj)
+    Pointer(T* obj)
         : object_(obj) {
         if (object_)
             object_->AddReference();
     }
 
-    Ptr(const Ptr<T>& ptr)
+    Pointer(const Pointer<T>& ptr)
         : object_(ptr.GetObject()) {
         if (object_)
             object_->AddReference();
     }
 
-    Ptr& operator=(Ptr<T> ptr) {
+    Pointer& operator=(Pointer<T> ptr) {
         this->Dec();
         object_ = ptr.GetObject();
         if (object_)
@@ -32,17 +32,17 @@ class Ptr {
     bool operator==(T* ptr) {
         return object_ == ptr;
     }
-    bool operator==(const Ptr<T>& ptr) const {
+    bool operator==(const Pointer<T>& ptr) const {
         return object_ == ptr.GetObject();
     }
-    bool operator==(Ptr<T>& ptr) {
+    bool operator==(Pointer<T>& ptr) {
         return object_ == ptr.GetObject();
     }
-    bool operator==(const Ptr<T> ptr) {
+    bool operator==(const Pointer<T> ptr) {
         return object_ == ptr.GetObject();
     }
 
-    ~Ptr() {
+    ~Pointer() {
         this->Dec();
     }
   public:
@@ -52,7 +52,7 @@ class Ptr {
     bool Valid() const {
         return object_ != nullptr;
     }
-    void ClearReference() {
+    void RemoveReference() {
         this->Dec();
         object_ = nullptr;
     }

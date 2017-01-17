@@ -9,7 +9,7 @@ class Component {
   public:
     VirtualMachine* virtual_machine;
   public:
-    const Ptr<LuaTable>& GetLuaInstance() const;
+    const Pointer<LuaTable>& GetLuaInstance() const;
     bool Initialize();
     virtual void Awake();
     virtual void Update();
@@ -17,7 +17,7 @@ class Component {
   public:
     string filename;
   private:
-    Ptr<LuaTable> luainstance_;
+    Pointer<LuaTable> luainstance_;
 };
 }
 

@@ -29,9 +29,7 @@ public:
             Assert::IsTrue(com.Initialize());
             Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 2);
             com.OnDestroy();
-            Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
-            vm.GetModuleManager().Destroy();
-            Assert::IsTrue(com.GetLuaInstance()->GetReferenceCount() == 1);
+            Assert::IsTrue(!com.GetLuaInstance().Valid());
         }
     }
 };

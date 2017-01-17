@@ -1,19 +1,19 @@
 #pragma once
-#include "Ptr.h"
+#include "Pointer.h"
 namespace Lua {
 class LuaTable;
 class LuaModule {
   public:
-    LuaModule(const char* name, Ptr<LuaTable> luaValue);
+    LuaModule(const char* name, Pointer<LuaTable> luaValue);
     ~LuaModule();
   public:
-    const Ptr<LuaTable>& GetModuleTable() const;
-    Ptr<LuaTable> CreateInstance();
-    void ReleaseInstance(Ptr<LuaTable>& object);
+    const Pointer<LuaTable>& GetModuleTable() const;
+    Pointer<LuaTable> CreateInstance();
+    void ReleaseInstance(Pointer<LuaTable>& object);
   private:
     string name_;
-    Ptr<LuaTable> module_table_;
-    list<Ptr<LuaTable>> object_instances_;
+    Pointer<LuaTable> module_table_;
+    list<Pointer<LuaTable>> object_instances_;
 };
 };
 

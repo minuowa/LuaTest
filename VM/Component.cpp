@@ -7,12 +7,16 @@ namespace Lua {
 Component::Component()
     : luainstance_(nullptr)
     , virtual_machine(nullptr) {
+    virtual_machine->GetComponentManager().Add(this);
 }
 
 Component::~Component() {
+    this->OnDestroy();
+    assert(!luainstance_.Valid());
+    virtual_machine->GetComponentManager().Remove(this);
 }
 
-const Ptr<LuaTable>& Component::GetLuaInstance() const {
+const Pointer<LuaTable>& Component::GetLuaInstance() const {
     return luainstance_;
 }
 
@@ -31,5 +35,6 @@ void Component::OnDestroy() {
     if (!luainstance_.Valid())
         return;
     virtual_machine->GetModuleManager().ReleaseInstance(this);
+    luainstance_.RemoveReference();
 }
 }
