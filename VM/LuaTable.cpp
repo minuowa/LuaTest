@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LuaTable.h"
+#include "Function.h"
 namespace Lua {
 LuaTable::LuaTable(lua_State* state, int reference)
     : BaseValue( state, reference ) {
@@ -16,12 +17,14 @@ Ptr<LuaTable> LuaTable::Create(lua_State* state) {
 }
 
 void LuaTable::SetValue(const char* key, Ptr<LuaTable> value) {
+    this->_clear();
     this->_pushself();
     this->_pushvalue(value);
     this->_setkeyvalue(key);
 }
 
 void LuaTable::Print(const char* tag/*=nullptr*/) {
+    this->_clear();
     this->_pushself();
     luaL_checktype(state_, 1, LUA_TTABLE);
     lua_pushnil(state_);
@@ -42,5 +45,7 @@ void LuaTable::SetMetatable(Ptr<LuaTable> meta) {
     this->_pushvalue(meta);
     this->_set_meta();
 }
+
+
 }
 

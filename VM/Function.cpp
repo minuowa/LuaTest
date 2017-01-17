@@ -1,19 +1,20 @@
 #include "stdafx.h"
 #include "Function.h"
+#include "LuaTable.h"
 
 namespace Lua {
 
 Function::Function(lua_State* state, int reference)
     : BaseValue(state, reference) {
-
 }
 
 Function::~Function() {
 }
 
-void Function::Call() {
-    this->_pushself();
-    lua_call(state_, 0, 0);
-}
+//void Function::Call() {
+//    this->_clear();
+//    this->_pushself();
+//    lua_call(state_, 0, 0);
+//}
 
 }

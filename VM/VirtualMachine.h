@@ -26,16 +26,17 @@ class VirtualMachine {
 
     void AddLoader();
     void PrintGCCount(const char* what = nullptr);
-    void PrintError();
-    void PrintSnapshot();
-    void PrintTop();
-    void PrintTable(const Ptr<LuaTable>& table, const char* tag = nullptr);
+    void PrintError() const;
+    void PrintSnapshot() const;
+    void PrintDebugRegistry() const;
+    void PrintTop() const;
+    void PrintTable(const Ptr<LuaTable>& table, const char* tag = nullptr) const;
 
-    bool DoString(const char* str, const char* chunkName = nullptr);
+    bool DoString(const char* str, const char* chunkName = nullptr)const;
 
     bool DoFile(const char* filename, const char* content = nullptr);
     Ptr<LuaTable> Require(const char* filename, const char* content = nullptr);
-    Ptr<LuaTable> GetTable(const char* name);
+    Ptr<LuaTable> GetGlobalTable(const char* name);
     Ptr<Function> GetFunction(const char* name);
     void UnloadModule(const char* moduleName);
 

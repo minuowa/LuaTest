@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LuaModule.h"
 #include "LuaTable.h"
+#include "Function.h"
 
 namespace Lua {
 

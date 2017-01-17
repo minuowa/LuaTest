@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BaseValue.h"
 #include "LuaTable.h"
+#include "Function.h"
 
 namespace Lua {
 
@@ -64,6 +65,18 @@ int BaseValue::_type() {
     return lua_type(state_, -1);
 }
 
+Ptr<LuaTable> BaseValue::_return_table() {
+    int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
+    LuaTable* ret = new LuaTable(state_, ref);
+    return ret;
+}
+
+Ptr<Function> BaseValue::_return_function() {
+    int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
+    Function* ret = new Function(state_, ref);
+    return ret;
+}
+
 void BaseValue::_set_meta() {
     lua_setmetatable(state_, -stack_count_);
     this->_clear();
@@ -99,6 +112,7 @@ void BaseValue::Print(const char* tag/*=nullptr*/) {
 }
 
 lua_Number BaseValue::GetNumber(const char* key) {
+    this->_clear();
     this->_pushself();
     this->_getkey(key);
     assert(LUA_TNUMBER == _type());
@@ -108,6 +122,7 @@ lua_Number BaseValue::GetNumber(const char* key) {
 }
 
 std::string BaseValue::GetString(const char* key) {
+    this->_clear();
     this->_pushself();
     this->_getkey(key);
     assert(LUA_TSTRING == _type());
@@ -115,4 +130,17 @@ std::string BaseValue::GetString(const char* key) {
     this->_clear();
     return ret;
 }
+
+
+Ptr<Function> BaseValue::GetFunction(const char* name) {
+    this->_clear();
+    this->_pushself();
+    this->_getkey(name);
+    assert(LUA_TFUNCTION == _type());
+    int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
+    Function* ret = new Function(state_, ref);
+    this->_clear();
+    return ret;
+}
+
 }

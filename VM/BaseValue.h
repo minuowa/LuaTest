@@ -3,6 +3,7 @@
 
 namespace Lua {
 class LuaTable;
+class Function;
 
 class BaseValue {
   public:
@@ -18,7 +19,9 @@ class BaseValue {
     virtual void Print(const char* tag = nullptr);
     lua_Number GetNumber(const char* key);
     string GetString(const char* key);
-  protected:
+
+    Ptr<Function> GetFunction(const char* name);
+  public:
     void _setkeyvalue(const char* key);
     void _pushself();
     void _getkey(const char* name);
@@ -30,10 +33,14 @@ class BaseValue {
     void _call(int argcount, int retcount);
     int _type();
 
+    Ptr<LuaTable> _return_table();
+    Ptr<Function> _return_function();
+
     template<typename T> T _return() { }
 
     template<> void _return() {
     }
+
     template<> int _return() {
         return (int)_return<lua_Number>();
     }
@@ -54,6 +61,13 @@ class BaseValue {
         auto ret = lua_tostring(state_, -stack_count_);
         return ret;
     }
+    template<> Ptr<LuaTable> _return() {
+        return _return_table();
+    };
+    template<> Ptr<Function> _return() {
+        return _return_function();
+    };
+
   protected:
     lua_State* state_;
   private:

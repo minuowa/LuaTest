@@ -75,13 +75,13 @@ void VirtualMachine::PrintGCCount(const char* what /*= nullptr*/) {
     }
 }
 
-void VirtualMachine::PrintError() {
+void VirtualMachine::PrintError() const {
     const char* error = lua_tostring(state_, -1);
     printf("´íÎóÐÅÏ¢:%s\n", error);
     lua_pop(state_, 1);
 }
 
-void VirtualMachine::PrintSnapshot() {
+void VirtualMachine::PrintSnapshot() const {
     int base = lua_gettop(state_);
     for (int i = base; i >= 0; --i) {
         printf("(%d)%s", i, LuaToString(state_, -1).c_str());
@@ -90,12 +90,21 @@ void VirtualMachine::PrintSnapshot() {
 
 
 
-void VirtualMachine::PrintTop() {
+void VirtualMachine::PrintDebugRegistry() const {
+    const char* chunk = "\
+	for k,v in pairs(debug.getregistry()) do\
+		print('Registry:',k,v)\
+	end\
+		";
+    this->DoString(chunk);
+}
+
+void VirtualMachine::PrintTop() const {
     printf("%s", LuaToString(state_, -1).c_str());
 }
 
 
-void VirtualMachine::PrintTable(const Ptr<LuaTable>& table, const char* tag/*=nullptr*/) {
+void VirtualMachine::PrintTable(const Ptr<LuaTable>& table, const char* tag/*=nullptr*/)const {
     if (table.Valid())
         table->Print(tag);
 }
@@ -121,10 +130,10 @@ Ptr<LuaTable> VirtualMachine::Require(const char* filename, const char* content/
     chunk += filename;
     chunk += "'";
     DoString(chunk.c_str());
-    return this->GetTable(filename);
+    return this->GetGlobalTable(filename);
 }
 
-Ptr<LuaTable> VirtualMachine::GetTable(const char* name) {
+Ptr<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
     LuaTable* ret = nullptr;
     lua_getfield(state_, LUA_GLOBALSINDEX, name);
     if (lua_type(state_, -1) == LUA_TTABLE) {
@@ -135,13 +144,8 @@ Ptr<LuaTable> VirtualMachine::GetTable(const char* name) {
 }
 
 Ptr<Function> VirtualMachine::GetFunction(const char* name) {
-    Function* ret = nullptr;
-    lua_getfield(state_, LUA_GLOBALSINDEX, name);
-    if (lua_type(state_, -1) == LUA_TFUNCTION) {
-        int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
-        ret = new Function(state_, ref);
-    }
-    return ret;
+    Ptr<LuaTable> gtable = this->GetGlobalTable("_G");
+    return gtable->GetFunction(name);
 }
 
 void VirtualMachine::UnloadModule(const char* moduleName) {
@@ -202,7 +206,7 @@ void VirtualMachine::GC() {
 
 
 
-bool VirtualMachine::DoString(const char* str, const char* chunkName /*= nullptr*/) {
+bool VirtualMachine::DoString(const char* str, const char* chunkName /*= nullptr*/) const {
     if (luaL_loadbuffer(state_, str, strlen(str), chunkName) != kRetSucess) {
         PrintError();
         return false;

@@ -2,11 +2,11 @@ d:\project\luatest\vmtest\debug\vmtest.pch
 d:\project\luatest\vmtest\debug\vc140.pdb
 d:\project\luatest\vmtest\debug\vc140.idb
 d:\project\luatest\vmtest\debug\stdafx.obj
-d:\project\luatest\vmtest\debug\testglobalfunction.obj
-d:\project\luatest\vmtest\debug\testmodule.obj
 d:\project\luatest\vmtest\debug\testfile.obj
 d:\project\luatest\vmtest\debug\testinit.obj
+d:\project\luatest\vmtest\debug\testmodule.obj
 d:\project\luatest\vmtest\debug\testmodulemanager.obj
+d:\project\luatest\vmtest\debug\testglobalfunction.obj
 d:\project\luatest\debug\vmtest.ilk
 d:\project\luatest\debug\vmtest.dll
 d:\project\luatest\debug\vmtest.pdb
