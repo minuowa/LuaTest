@@ -2,6 +2,7 @@
 #include "BaseValue.h"
 #include "LuaTable.h"
 #include "Function.h"
+#include "VirtualMachine.h"
 
 namespace Lua {
 
@@ -13,6 +14,7 @@ BaseValue::BaseValue(lua_State* state, int reference)
 
 BaseValue::~BaseValue() {
     lua_unref(state_, lua_reference_);
+    VirtualMachine::GetInstance()->Unref(lua_reference_);
 }
 
 lua_State* BaseValue::GetState() const {
@@ -136,10 +138,13 @@ Pointer<Function> BaseValue::GetFunction(const char* name) {
     this->_clear();
     this->_pushself();
     this->_getkey(name);
-    assert(LUA_TFUNCTION == _type());
-    int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
-    Function* ret = new Function(state_, ref);
-    this->_clear();
+    Function* ret = nullptr;
+    if (LUA_TFUNCTION == _type()) {
+        int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
+        ret = new Function(state_, ref);
+        this->_clear();
+    }
+
     return ret;
 }
 

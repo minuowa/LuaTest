@@ -10,8 +10,9 @@ class ModuleManager {
     ModuleManager(VirtualMachine* owner);
     ~ModuleManager();
   public:
-    Pointer<LuaTable> CreateInstance(const char* moduleName);
-    void ReleaseInstance(Component* com);
+    Pointer<LuaTable> CreateInstance(const char* modulename);
+    FunctionTaker* GetFunctionTaker(const char* modulename);
+    void ReleaseInstance(const char* modulename, Pointer<LuaTable> luaobject);
     void Destroy();
     LuaModule* Get(const char* name, bool require = true);
   private:

@@ -14,6 +14,10 @@ class VirtualMachine {
     VirtualMachine();
     ~VirtualMachine();
   public:
+    static VirtualMachine* GetInstance();
+  private:
+    static VirtualMachine* instance_;
+  public:
     lua_State* GetState();
     static VirtualFile* GetVirtualFile(const char* fileName);
     static int MyLoader(lua_State * pState);
@@ -40,6 +44,8 @@ class VirtualMachine {
     Pointer<LuaTable> GetGlobalTable(const char* name);
     Pointer<Function> GetFunction(const char* name);
     void UnloadModule(const char* moduleName);
+
+    void Unref(int reference);
 
     ModuleManager& GetModuleManager();
     ComponentManager& GetComponentManager();

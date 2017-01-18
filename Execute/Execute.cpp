@@ -26,44 +26,50 @@ end\n\
 
     VirtualMachine vm;
     vm.Open();
-    Pointer<LuaTable> gt = vm.Require(kFileName, buffer);
-
-    assert(gt->GetNumber("ID") == 100);
-
+    vm.PrintDebugRegistry();
     {
-        Pointer<LuaTable> obj1 = vm.GetModuleManager().CreateInstance(kFileName);
-        Pointer<LuaTable> obj2 = vm.GetModuleManager().CreateInstance(kFileName);
-
-        auto awake = gt->GetFunction("Awake");
-        auto getgid = gt->GetFunction("GetGID");
-        auto setgid = gt->GetFunction("SetGID");
-
-        Assert::IsTrue(obj1->GetNumber("ID") == 100);
-        obj1->SetValue("ID", 1000);
-        Assert::IsTrue(obj1->GetNumber("ID") == 1000);
-
-        awake->Call(obj1);
-        Assert::IsTrue(getgid->Call<int>(obj1) == 20);
-        setgid->Call(obj1, 15);
-        Assert::IsTrue(getgid->Call<int>(obj1) == 15);
-
-        Assert::IsTrue(obj2->GetNumber("ID") == 100);
-        obj2->SetValue("ID", 1500);
-        Assert::IsTrue(obj2->GetNumber("ID") == 1500);
-
-        awake->Call(obj2);
-        Assert::IsTrue(getgid->Call<int>(obj2) == 20);
-        setgid->Call(obj2, 35);
-        Assert::IsTrue(getgid->Call<int>(obj2) == 35);
-
+        Pointer<LuaTable> gt = vm.Require(kFileName, buffer);
         assert(gt->GetNumber("ID") == 100);
 
-        Assert::IsTrue(obj1->GetNumber("ID") == 1000);
-        Assert::IsTrue(obj2->GetNumber("ID") == 1500);
+        Pointer<LuaTable> obj1 = vm.GetModuleManager().CreateInstance(kFileName);
+        //Pointer<LuaTable> obj2 = vm.GetModuleManager().CreateInstance(kFileName);
+
+        //auto awake = gt->GetFunction("Awake");
+        //auto getgid = gt->GetFunction("GetGID");
+        //auto setgid = gt->GetFunction("SetGID");
+
+        //Assert::IsTrue(obj1->GetNumber("ID") == 100);
+        //obj1->SetValue("ID", 1000);
+        //Assert::IsTrue(obj1->GetNumber("ID") == 1000);
+
+        //awake->Call(obj1);
+        //Assert::IsTrue(getgid->Call<int>(obj1) == 20);
+        //setgid->Call(obj1, 15);
+        //Assert::IsTrue(getgid->Call<int>(obj1) == 15);
+
+        //Assert::IsTrue(obj2->GetNumber("ID") == 100);
+        //obj2->SetValue("ID", 1500);
+        //Assert::IsTrue(obj2->GetNumber("ID") == 1500);
+
+        //awake->Call(obj2);
+        //Assert::IsTrue(getgid->Call<int>(obj2) == 20);
+        //setgid->Call(obj2, 35);
+        //Assert::IsTrue(getgid->Call<int>(obj2) == 35);
+
+        //assert(gt->GetNumber("ID") == 100);
+
+        //Assert::IsTrue(obj1->GetNumber("ID") == 1000);
+        //Assert::IsTrue(obj2->GetNumber("ID") == 1500);
+
+        vm.GetModuleManager().ReleaseInstance(kFileName, obj1);
+        //vm.GetModuleManager().ReleaseInstance(kFileName, obj2);
+
+        //Assert::IsTrue(gt->GetNumber("ID") == 100);
+        vm.PrintDebugRegistry();
+
     }
 
-    Assert::IsTrue(gt->GetNumber("ID") == 100);
-    vm.PrintDebugRegistry();
+    vm.Close();
     return 0;
 }
 

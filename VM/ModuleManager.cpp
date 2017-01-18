@@ -18,15 +18,20 @@ Pointer<LuaTable> ModuleManager::CreateInstance(const char* moduleName) {
     return module ? module->CreateInstance() : nullptr;
 }
 
-void ModuleManager::ReleaseInstance(Component* com) {
-    if (com == nullptr)
-        return;
-    auto instance = com->GetLuaInstance();
-    assert(instance.Valid());
-    instance->SetMetatable(nullptr);
+
+FunctionTaker* ModuleManager::GetFunctionTaker(const char* moduleName) {
+    LuaModule* module = this->Get(moduleName);
+    if (module)
+        return module->GetFunctionTaker();
+    return nullptr;
+}
+
+void ModuleManager::ReleaseInstance(const char* modulename, Pointer<LuaTable> luaobject) {
+    assert(luaobject.Valid());
+    luaobject->SetMetatable(nullptr);
     LuaModule* module = nullptr;
-    fun::try_get_map_value(modules_, com->filename.c_str(), module);
-    module->ReleaseInstance(instance);
+    fun::try_get_map_value(modules_, modulename, module);
+    module->ReleaseInstance(luaobject);
 }
 
 void ModuleManager::Destroy() {

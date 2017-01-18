@@ -11,12 +11,20 @@ VirtualMachine::VirtualMachine()
     : state_(nullptr)
     , allocater_(nullptr)
     , module_manager_(this) {
+    instance_ = this;
 }
 
 
 VirtualMachine::~VirtualMachine() {
+    instance_ = nullptr;
     this->Close();
 }
+
+VirtualMachine* VirtualMachine::GetInstance() {
+    return instance_;
+}
+
+VirtualMachine* VirtualMachine::instance_ = nullptr;
 
 lua_State* VirtualMachine::GetState() {
     return state_;
@@ -50,7 +58,9 @@ bool VirtualMachine::Open() {
     return true;
 }
 
-
+int Writer(lua_State *L, const void* p, size_t sz, void* ud) {
+    return sz;
+}
 void VirtualMachine::Close() {
     if (state_ == nullptr) {
         return;
@@ -61,6 +71,10 @@ void VirtualMachine::Close() {
 
     this->GC();
     this->PrintGCCount("Close Lua");
+    this->PrintDebugRegistry();
+
+    //luaL_Buffer b;
+    //lua_dump(state_, Writer, &b);
     lua_close(state_);
     state_ = nullptr;
     fun::delete_map_pointers(files_);
@@ -96,10 +110,12 @@ void VirtualMachine::PrintSnapshot() const {
 
 void VirtualMachine::PrintDebugRegistry() const {
     const char* chunk = "\
+	print(\"--------------------------------------\")\
 	for k,v in pairs(debug.getregistry()) do\
 		print('Registry:',k,v)\
 	end\
-		";
+	print(\"--------------------------------------\")\
+                        ";
     this->DoString(chunk);
 }
 
@@ -165,11 +181,17 @@ void VirtualMachine::UnloadModule(const char* moduleName) {
     DoString(chunk.c_str());
 }
 
-ModuleManager& VirtualMachine::GetModuleManager() {
+void VirtualMachine::Unref(int reference) {
+    char buffer[250] = { 0, };
+    sprintf_s(buffer, "debug.getregistry()[%d]=nil", reference);
+    this->DoString(buffer);
+}
+
+ModuleManager & VirtualMachine::GetModuleManager() {
     return module_manager_;
 }
 
-ComponentManager& VirtualMachine::GetComponentManager() {
+ComponentManager & VirtualMachine::GetComponentManager() {
     return component_manager_;
 }
 
@@ -227,7 +249,7 @@ bool VirtualMachine::DoString(const char* str, const char* chunkName /*= nullptr
     return true;
 }
 
-int VirtualMachine::MyLoader(lua_State* pState) {
+int VirtualMachine::MyLoader(lua_State * pState) {
     std::string module = lua_tostring(pState, 1);
     string fullname = module + ".lua";
     VirtualFile* file = GetVirtualFile(module.c_str());

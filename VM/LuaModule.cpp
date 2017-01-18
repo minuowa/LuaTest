@@ -5,13 +5,14 @@
 
 namespace Lua {
 
-
 LuaModule::LuaModule(const char* name, Pointer<LuaTable> module_instance)
     : name_(name)
     , module_table_(module_instance) {
+    function_taker_.Initialize(module_instance);
 }
 
 LuaModule::~LuaModule() {
+    function_taker_.Destroy();
     assert(object_instances_.empty());
 }
 
@@ -26,6 +27,10 @@ Pointer<LuaTable> LuaModule::CreateInstance() {
     ret->SetMetatable(meta);
     object_instances_.push_back(ret);
     return ret;
+}
+
+FunctionTaker* LuaModule::GetFunctionTaker() {
+    return &function_taker_;
 }
 
 void LuaModule::ReleaseInstance(Pointer<LuaTable>& object) {
