@@ -3,6 +3,7 @@
 #include "LuaTable.h"
 #include "Function.h"
 #include "VirtualMachine.h"
+#include "lstate.h"
 
 namespace Lua {
 
@@ -14,7 +15,8 @@ BaseValue::BaseValue(lua_State* state, int reference)
 
 BaseValue::~BaseValue() {
     lua_unref(state_, lua_reference_);
-    VirtualMachine::GetInstance()->Unref(lua_reference_);
+    VirtualMachine* vm = getVirtualMachine(state_);
+    vm->Unref(lua_reference_);
 }
 
 lua_State* BaseValue::GetState() const {

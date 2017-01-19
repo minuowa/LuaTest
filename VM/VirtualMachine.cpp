@@ -7,24 +7,19 @@
 #include <iostream>
 namespace Lua {
 
+
+
 VirtualMachine::VirtualMachine()
     : state_(nullptr)
     , allocater_(nullptr)
     , module_manager_(this) {
-    instance_ = this;
 }
 
 
 VirtualMachine::~VirtualMachine() {
-    instance_ = nullptr;
     this->Close();
 }
 
-VirtualMachine* VirtualMachine::GetInstance() {
-    return instance_;
-}
-
-VirtualMachine* VirtualMachine::instance_ = nullptr;
 
 lua_State* VirtualMachine::GetState() {
     return state_;
@@ -184,6 +179,7 @@ void VirtualMachine::Unref(int reference) {
     char buffer[250] = { 0, };
     sprintf_s(buffer, "debug.getregistry()[%d]=nil", reference);
     this->DoString(buffer);
+    this->DoString("debug.getregistry()[0]=nil");
 }
 
 ModuleManager & VirtualMachine::GetModuleManager() {
@@ -222,8 +218,6 @@ void VirtualMachine::ClearStack() {
     lua_pop(state_, lua_gettop(state_));
 }
 
-std::map<std::string, VirtualFile*> VirtualMachine::files_;
-
 int VirtualMachine::GCBitCount() {
     return lua_gc(state_, LUA_GCCOUNTB, 0);
 }
@@ -251,7 +245,7 @@ bool VirtualMachine::DoString(const char* str, const char* chunkName /*= nullptr
 int VirtualMachine::MyLoader(lua_State * pState) {
     std::string module = lua_tostring(pState, 1);
     string fullname = module + ".lua";
-    VirtualFile* file = GetVirtualFile(module.c_str());
+    VirtualFile* file = getVirtualMachine(pState)->GetVirtualFile(module.c_str());
 
     if (file) {
         try {

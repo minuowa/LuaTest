@@ -17,6 +17,7 @@
 extern "C" {
 #endif
 
+#include "lstate.h"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"

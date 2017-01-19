@@ -14,12 +14,8 @@ class VirtualMachine {
     VirtualMachine();
     ~VirtualMachine();
   public:
-    static VirtualMachine* GetInstance();
-  private:
-    static VirtualMachine* instance_;
-  public:
     lua_State* GetState();
-    static VirtualFile* GetVirtualFile(const char* fileName);
+    VirtualFile* GetVirtualFile(const char* fileName);
     static int MyLoader(lua_State * pState);
 
     bool Open();
@@ -61,7 +57,10 @@ class VirtualMachine {
     Allocater* allocater_;
     ModuleManager module_manager_;
     ComponentManager component_manager_;
-    static map<string, VirtualFile*> files_;
+    map<string, VirtualFile*> files_;
 
 };
+inline VirtualMachine* getVirtualMachine(lua_State* state) {
+    return (VirtualMachine*)(state->l_G->ud);
+}
 };
