@@ -55,6 +55,7 @@ bool VirtualMachine::Open() {
         return false;
     }
     this->AddLoader();
+    allocater_->Snapshot();
     return true;
 }
 
@@ -69,12 +70,10 @@ void VirtualMachine::Close() {
     component_manager_.Destroy();
     module_manager_.Destroy();
 
+    this->PrintDebugRegistry();
     this->GC();
     this->PrintGCCount("Close Lua");
-    this->PrintDebugRegistry();
-
-    //luaL_Buffer b;
-    //lua_dump(state_, Writer, &b);
+    allocater_->DumpDifference(std::cout);
     lua_close(state_);
     state_ = nullptr;
     fun::delete_map_pointers(files_);

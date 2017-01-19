@@ -62,5 +62,6 @@ class VirtualMachine {
     ModuleManager module_manager_;
     ComponentManager component_manager_;
     static map<string, VirtualFile*> files_;
+
 };
 };
