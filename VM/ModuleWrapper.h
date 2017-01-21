@@ -3,10 +3,10 @@
 #include "FunctionTaker.h"
 namespace Lua {
 class LuaTable;
-class LuaModule  {
+class ModuleWrapper  {
   public:
-    LuaModule(const char* name, Pointer<LuaTable> luaValue);
-    ~LuaModule();
+    ModuleWrapper(const char* name, Pointer<LuaTable> luaValue);
+    ~ModuleWrapper();
   public:
     const Pointer<LuaTable>& GetModuleTable() const;
     Pointer<LuaTable> CreateInstance();

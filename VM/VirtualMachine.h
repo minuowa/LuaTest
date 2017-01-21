@@ -45,10 +45,12 @@ class VirtualMachine {
 
     ModuleManager& GetModuleManager();
     ComponentManager& GetComponentManager();
+    void DumpGC(ostream& stream = std::cout);
   private:
     bool InitState();
     void TryAddFile(const char* filename, const char* content);
     void ClearStack();
+    void SnapGCObjects();
   public:
     const string kFileExtension = ".lua";
     static const int kRetSucess = 0;
@@ -58,6 +60,7 @@ class VirtualMachine {
     ModuleManager module_manager_;
     ComponentManager component_manager_;
     map<string, VirtualFile*> files_;
+    list<void*> white_objects_;
 
 };
 inline VirtualMachine* getVirtualMachine(lua_State* state) {

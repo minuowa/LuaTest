@@ -27,7 +27,7 @@ void Allocater::DumpDifference(ostream& stream /*= std::cout*/) {
             size += block.second;
         }
     }
-    printf("\nDump Size:%d (Bit)", size);
+    printf("\nDump Size:%d (Byte)", size);
 }
 
 

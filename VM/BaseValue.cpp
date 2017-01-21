@@ -14,9 +14,12 @@ BaseValue::BaseValue(lua_State* state, int reference)
 }
 
 BaseValue::~BaseValue() {
-    lua_unref(state_, lua_reference_);
     VirtualMachine* vm = getVirtualMachine(state_);
+    vm->PrintGCCount("UrefB");
+    lua_unref(state_, lua_reference_);
     vm->Unref(lua_reference_);
+    vm->GC();
+    vm->PrintGCCount("Uref");
 }
 
 lua_State* BaseValue::GetState() const {

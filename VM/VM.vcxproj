@@ -158,7 +158,7 @@
     <ClInclude Include="FunctionTaker.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Function.h" />
-    <ClInclude Include="LuaModule.h" />
+    <ClInclude Include="ModuleWrapper.h" />
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="LuaTable.h" />
     <ClInclude Include="BaseValue.h" />
@@ -176,7 +176,7 @@
     <ClCompile Include="FunctionTaker.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Function.cpp" />
-    <ClCompile Include="LuaModule.cpp" />
+    <ClCompile Include="ModuleWrapper.cpp" />
     <ClCompile Include="ModuleManager.cpp" />
     <ClCompile Include="LuaTable.cpp" />
     <ClCompile Include="BaseValue.cpp" />

@@ -40,7 +40,7 @@ void Component::Update() {
 void Component::OnDestroy() {
     if (!luainstance_.Valid())
         return;
-    function_taker->Update.Call(luainstance_);
+    function_taker->OnDestroy.Call(luainstance_);
     virtual_machine->GetModuleManager().ReleaseInstance(this->filename.c_str(), luainstance_);
     luainstance_.RemoveReference();
 }

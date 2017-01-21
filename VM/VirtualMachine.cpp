@@ -50,6 +50,7 @@ bool VirtualMachine::Open() {
         return false;
     }
     this->AddLoader();
+    SnapGCObjects();
     allocater_->Snapshot();
     return true;
 }
@@ -68,7 +69,8 @@ void VirtualMachine::Close() {
     this->PrintDebugRegistry();
     this->GC();
     this->PrintGCCount("Close Lua");
-    allocater_->DumpDifference(std::cout);
+    DumpGC(std::cout);
+    //allocater_->DumpDifference(std::cout);
     lua_close(state_);
     state_ = nullptr;
     fun::delete_map_pointers(files_);
@@ -188,6 +190,66 @@ ModuleManager & VirtualMachine::GetModuleManager() {
 
 ComponentManager & VirtualMachine::GetComponentManager() {
     return component_manager_;
+}
+
+void VirtualMachine::SnapGCObjects() {
+    list<void*> ret;
+    list<void*> greys;
+    list<void*> blacks;
+    GCObject* node = state_->l_G->rootgc;
+    while (node) {
+        if (isblack(node))
+            blacks.push_back(node);
+        else if (isgray(node))
+            greys.push_back(node);
+        else if (iswhite(node))
+            white_objects_.push_back(node);
+        ret.push_back(node);
+        node = node->gch.next;
+    }
+}
+//#define LUA_TNIL		0
+//#define LUA_TBOOLEAN		1
+//#define LUA_TLIGHTUSERDATA	2
+//#define LUA_TNUMBER		3
+//#define LUA_TSTRING		4
+//#define LUA_TTABLE		5
+//#define LUA_TFUNCTION		6
+//#define LUA_TUSERDATA		7
+//#define LUA_TTHREAD		8
+const char* names[] = {
+    "Nil",
+    "Bool",
+    "LightUserdata",
+    "Number",
+    "String",
+    "Table",
+    "Fucntion",
+    "Thread",
+};
+
+void VirtualMachine::DumpGC(ostream& stream /*= std::cout*/) {
+    list<void*> curwhites;
+    GCObject* node = state_->l_G->rootgc;
+    while (node) {
+        assert(iswhite(node));
+        curwhites.push_back(node);
+        node = node->gch.next;
+    }
+    //for (auto obj : white_objects_) {
+    //    assert(std::find(curwhites.begin(), curwhites.end(), obj) != curwhites.end());
+    //}
+    char buffer[128] = { 0, };
+    int count = 0;
+    for (auto obj : curwhites) {
+        if (std::find(white_objects_.begin(), white_objects_.end(), obj) == white_objects_.end()) {
+            sprintf_s(buffer, "\nGCObject :0X%08X Type:%s", (unsigned int)obj, names[((GCObject*)obj)->gch.tt]);
+            stream << buffer;
+            count++;
+        }
+    }
+    sprintf_s(buffer, "\nDump GC Object:%d (%d->%d)", count, white_objects_.size(), curwhites.size());
+    stream << buffer;
 }
 
 bool VirtualMachine::InitState() {

@@ -20,6 +20,10 @@ end\n\
 function _M:SetGID(id)\n\
 	self.gid=id\n\
 end\n\
+print(_M)\n\
+for k,v in pairs(_G) do\n\
+	print(k,v)\n\
+end\n\
                          ";
 
     const char* kFileName = "login";
@@ -65,10 +69,12 @@ end\n\
         //vm.GetModuleManager().ReleaseInstance(kFileName, obj2);
 
         //Assert::IsTrue(gt->GetNumber("ID") == 100);
-        vm.PrintDebugRegistry();
+        //vm.PrintDebugRegistry();
 
     }
-
+    vm.PrintGCCount();
+    vm.GC();
+    vm.PrintGCCount();
     vm.Close();
     return 0;
 }

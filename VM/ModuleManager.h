@@ -1,7 +1,7 @@
 #pragma once
 #include "LuaTable.h"
 #include "Pointer.h"
-#include "LuaModule.h"
+#include "ModuleWrapper.h"
 namespace Lua {
 class VirtualMachine;
 class Component;
@@ -14,10 +14,10 @@ class ModuleManager {
     FunctionTaker* GetFunctionTaker(const char* modulename);
     void ReleaseInstance(const char* modulename, Pointer<LuaTable> luaobject);
     void Destroy();
-    LuaModule* Get(const char* name, bool require = true);
+    ModuleWrapper* Get(const char* name, bool require = true);
   private:
     VirtualMachine* virtual_machine_;
-    map<string, LuaModule*> modules_;
+    map<string, ModuleWrapper*> modules_;
 };
 };
 
