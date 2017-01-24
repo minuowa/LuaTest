@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LuaTable.h"
 #include "Function.h"
+#include "LuaModule.h"
 namespace Lua {
 LuaTable::LuaTable(lua_State* state, int reference)
     : BaseValue( state, reference ) {
@@ -17,6 +18,13 @@ Pointer<LuaTable> LuaTable::Create(lua_State* state) {
 }
 
 void LuaTable::SetValue(const char* key, Pointer<LuaTable> value) {
+    this->_clear();
+    this->_pushself();
+    this->_pushvalue(value);
+    this->_setkeyvalue(key);
+}
+
+void LuaTable::SetValue(const char* key, Pointer<LuaModule> value) {
     this->_clear();
     this->_pushself();
     this->_pushvalue(value);

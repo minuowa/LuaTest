@@ -153,11 +153,12 @@
   <ItemGroup>
     <ClInclude Include="Allocater.h" />
     <ClInclude Include="CallBack.h" />
-    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="LuaObjectManager.h" />
     <ClInclude Include="Fun.h" />
     <ClInclude Include="FunctionTaker.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="LuaModule.h" />
     <ClInclude Include="ModuleWrapper.h" />
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="LuaTable.h" />
@@ -172,10 +173,11 @@
   <ItemGroup>
     <ClCompile Include="Allocater.cpp" />
     <ClCompile Include="CallBack.cpp" />
-    <ClCompile Include="ComponentManager.cpp" />
+    <ClCompile Include="LuaObjectManager.cpp" />
     <ClCompile Include="FunctionTaker.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Function.cpp" />
+    <ClCompile Include="LuaModule.cpp" />
     <ClCompile Include="ModuleWrapper.cpp" />
     <ClCompile Include="ModuleManager.cpp" />
     <ClCompile Include="LuaTable.cpp" />

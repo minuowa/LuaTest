@@ -5,7 +5,8 @@
 #include "ModuleManager.h"
 #include "Component.h"
 #include "Function.h"
-#include "ComponentManager.h"
+#include "LuaObjectManager.h"
+#include "LuaModule.h"
 
 namespace Lua {
 class Allocater;
@@ -36,15 +37,16 @@ class VirtualMachine {
     bool DoString(const char* str, const char* chunkName = nullptr)const;
 
     bool DoFile(const char* filename, const char* content = nullptr);
-    Pointer<LuaTable> Require(const char* filename, const char* content = nullptr);
+    Pointer<LuaModule> Require(const char* filename, const char* content = nullptr);
     Pointer<LuaTable> GetGlobalTable(const char* name);
+    Pointer<LuaModule> GetModule(const char* name);
     Pointer<Function> GetFunction(const char* name);
     void UnloadModule(const char* moduleName);
 
     void Unref(int reference);
 
     ModuleManager& GetModuleManager();
-    ComponentManager& GetComponentManager();
+    LuaObjectManager& GetComponentManager();
     void DumpGC(ostream& stream = std::cout);
   private:
     bool InitState();
@@ -58,7 +60,7 @@ class VirtualMachine {
     lua_State* state_;
     Allocater* allocater_;
     ModuleManager module_manager_;
-    ComponentManager component_manager_;
+    LuaObjectManager component_manager_;
     map<string, VirtualFile*> files_;
     list<void*> white_objects_;
 

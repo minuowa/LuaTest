@@ -4,6 +4,7 @@
 
 namespace Lua {
 class LuaTable;
+class LuaModule;
 class Function;
 
 class BaseValue : public PointerBase {
@@ -26,6 +27,7 @@ class BaseValue : public PointerBase {
     void _pushvalue(const char* value);
     void _pushvalue(lua_Number value);
     void _pushvalue(Pointer<LuaTable> value);
+    void _pushvalue(Pointer<LuaModule> value);
     void _clear();
     void _set_meta();
     void _call(int argcount, int retcount);

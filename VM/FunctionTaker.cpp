@@ -3,6 +3,7 @@
 #include "Function.h"
 #include "ModuleWrapper.h"
 #include "LuaTable.h"
+#include "LuaModule.h"
 
 namespace Lua {
 
@@ -13,7 +14,7 @@ FunctionTaker::FunctionTaker() {
 FunctionTaker::~FunctionTaker() {
 }
 
-bool FunctionTaker::Initialize(Pointer<LuaTable> module) {
+bool FunctionTaker::Initialize(Pointer<LuaModule> module) {
     this->Awake = module->GetFunction("Awake");
     this->Start = module->GetFunction("Start");
     this->Update = module->GetFunction("Update");

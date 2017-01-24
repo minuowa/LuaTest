@@ -12,7 +12,9 @@ class LuaTable : public BaseValue {
     static Pointer<LuaTable> Create(lua_State* state);
 
     void SetValue(const char* key, Pointer<LuaTable> value);
+    void SetValue(const char* key, Pointer<LuaModule> value);
     template<typename T> void SetValue(const char* key, T value) {
+        this->_clear();
         this->_pushself();
         this->_pushvalue(value);
         this->_setkeyvalue(key);

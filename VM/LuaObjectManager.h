@@ -1,10 +1,10 @@
 #pragma once
 namespace Lua {
 class Component;
-class ComponentManager {
+class LuaObjectManager {
   public:
-    ComponentManager();
-    ~ComponentManager();
+    LuaObjectManager();
+    ~LuaObjectManager();
 
     void Add(Component* com);
     void Remove(Component* com);

@@ -2,12 +2,13 @@
 #include "ModuleWrapper.h"
 #include "LuaTable.h"
 #include "Function.h"
+#include "LuaModule.h"
 
 namespace Lua {
 
-ModuleWrapper::ModuleWrapper(const char* name, Pointer<LuaTable> module_instance)
+ModuleWrapper::ModuleWrapper(const char* name, Pointer<LuaModule> module_instance)
     : name_(name)
-    , module_table_(module_instance) {
+    , module_(module_instance) {
     function_taker_.Initialize(module_instance);
 }
 
@@ -16,14 +17,14 @@ ModuleWrapper::~ModuleWrapper() {
     assert(object_instances_.empty());
 }
 
-const Pointer<LuaTable>& ModuleWrapper::GetModuleTable()const {
-    return module_table_;
+const Pointer<LuaModule>& ModuleWrapper::GetModule()const {
+    return module_;
 }
 
 Pointer<LuaTable> ModuleWrapper::CreateInstance() {
-    auto ret = LuaTable::Create(module_table_->GetState());
-    auto meta = LuaTable::Create(module_table_->GetState());
-    meta->SetValue("__index", module_table_);
+    auto ret = LuaTable::Create(module_->GetState());
+    auto meta = LuaTable::Create(module_->GetState());
+    meta->SetValue("__index", module_);
     ret->SetMetatable(meta);
     object_instances_.push_back(ret);
     return ret;

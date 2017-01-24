@@ -1,27 +1,27 @@
 #include "stdafx.h"
-#include "ComponentManager.h"
+#include "LuaObjectManager.h"
 #include "Component.h"
 #include "Function.h"
 namespace Lua {
 
-ComponentManager::ComponentManager() {
+LuaObjectManager::LuaObjectManager() {
 
 }
 
-ComponentManager::~ComponentManager() {
+LuaObjectManager::~LuaObjectManager() {
     this->Destroy();
 }
 
-void ComponentManager::Add(Component* com) {
+void LuaObjectManager::Add(Component* com) {
     //assert(std::find(components_.front(), components_.end(), (const Component*&)com) == nullptr);
     components_.push_back(com);
 }
 
-void ComponentManager::Remove(Component* com) {
+void LuaObjectManager::Remove(Component* com) {
     components_.remove(com);
 }
 
-void ComponentManager::Destroy() {
+void LuaObjectManager::Destroy() {
     if (components_.size() == 0)
         return;
 

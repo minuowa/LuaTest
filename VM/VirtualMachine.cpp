@@ -50,6 +50,7 @@ bool VirtualMachine::Open() {
         return false;
     }
     this->AddLoader();
+    this->PrintGCCount("Open Lua");
     SnapGCObjects();
     allocater_->Snapshot();
     return true;
@@ -136,7 +137,7 @@ bool VirtualMachine::DoFile(const char* filename, const char* content/*= nullptr
     return true;
 }
 
-Pointer<LuaTable> VirtualMachine::Require(const char* filename, const char* content/*= nullptr*/) {
+Pointer<LuaModule> VirtualMachine::Require(const char* filename, const char* content/*= nullptr*/) {
     if (content != nullptr)
         this->TryAddFile(filename, content);
 
@@ -146,7 +147,7 @@ Pointer<LuaTable> VirtualMachine::Require(const char* filename, const char* cont
     chunk += filename;
     chunk += "'";
     DoString(chunk.c_str());
-    return this->GetGlobalTable(filename);
+    return this->GetModule(filename);
 }
 
 Pointer<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
@@ -155,6 +156,17 @@ Pointer<LuaTable> VirtualMachine::GetGlobalTable(const char* name) {
     if (lua_type(state_, -1) == LUA_TTABLE) {
         int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
         ret = new LuaTable(state_, ref);
+    }
+    return ret;
+}
+
+Pointer<LuaModule> VirtualMachine::GetModule(const char* name) {
+    LuaModule* ret = nullptr;
+    lua_getfield(state_, LUA_GLOBALSINDEX, name);
+    if (lua_type(state_, -1) == LUA_TTABLE) {
+        int ref = luaL_ref(state_, LUA_REGISTRYINDEX);
+        ret = new LuaModule(state_, ref, name);
+
     }
     return ret;
 }
@@ -188,7 +200,7 @@ ModuleManager & VirtualMachine::GetModuleManager() {
     return module_manager_;
 }
 
-ComponentManager & VirtualMachine::GetComponentManager() {
+LuaObjectManager & VirtualMachine::GetComponentManager() {
     return component_manager_;
 }
 
@@ -255,7 +267,6 @@ void VirtualMachine::DumpGC(ostream& stream /*= std::cout*/) {
 bool VirtualMachine::InitState() {
     state_ = lua_newstate(GlobalAllocate, this);
     if (state_) {
-        this->PrintGCCount("Open Lua");
         lua_atpanic(state_, &panic);
         luaL_openlibs(state_);
         this->ClearStack();
@@ -281,7 +292,8 @@ void VirtualMachine::ClearStack() {
 }
 
 int VirtualMachine::GCBitCount() {
-    return lua_gc(state_, LUA_GCCOUNTB, 0);
+    return state_->l_G->totalbytes;
+    //return lua_gc(state_, LUA_GCCOUNTB, 0);
 }
 
 void VirtualMachine::GC() {

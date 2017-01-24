@@ -3,8 +3,7 @@
 #include "CallBack.h"
 namespace Lua {
 class Function;
-class LuaTable;
-
+class LuaModule;
 
 class FunctionTaker {
   public:
@@ -12,7 +11,7 @@ class FunctionTaker {
     ~FunctionTaker();
 
   public:
-    bool Initialize(Pointer<LuaTable> module);
+    bool Initialize(Pointer<LuaModule> module);
     void Destroy();
   public:
     CallBack Awake;

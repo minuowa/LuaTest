@@ -15,11 +15,11 @@ BaseValue::BaseValue(lua_State* state, int reference)
 
 BaseValue::~BaseValue() {
     VirtualMachine* vm = getVirtualMachine(state_);
-    vm->PrintGCCount("UrefB");
+    vm->PrintGCCount("Uref{");
     lua_unref(state_, lua_reference_);
-    vm->Unref(lua_reference_);
+    //vm->Unref(lua_reference_);
     vm->GC();
-    vm->PrintGCCount("Uref");
+    vm->PrintGCCount("}");
 }
 
 lua_State* BaseValue::GetState() const {
@@ -59,6 +59,15 @@ void BaseValue::_pushvalue(Pointer<LuaTable> value) {
     }
 }
 
+
+void BaseValue::_pushvalue(Pointer<LuaModule> value) {
+    if (value.Valid())
+        value->_pushself();
+    else {
+        lua_pushnil(state_);
+        stack_count_++;
+    }
+}
 
 void BaseValue::_clear() {
     int count = lua_gettop(state_);
@@ -122,10 +131,12 @@ lua_Number BaseValue::GetNumber(const char* key) {
     this->_clear();
     this->_pushself();
     this->_getkey(key);
-    assert(LUA_TNUMBER == _type());
-    auto ret = _return<lua_Number>();
-    this->_clear();
-    return ret;
+    if (LUA_TNUMBER == _type()) {
+        auto ret = _return<lua_Number>();
+        this->_clear();
+        return ret;
+    }
+    return 0;
 }
 
 std::string BaseValue::GetString(const char* key) {

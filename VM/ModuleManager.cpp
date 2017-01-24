@@ -41,7 +41,7 @@ void ModuleManager::Destroy() {
 ModuleWrapper* ModuleManager::Get(const char* name, bool require /*= true*/) {
     ModuleWrapper* module = nullptr;
     if (!fun::try_get_map_value(modules_, name, module) && require) {
-        Pointer<LuaTable> luainstance = virtual_machine_->Require(name);
+        Pointer<LuaModule> luainstance = virtual_machine_->Require(name);
         if (!luainstance.Valid())
             return nullptr;
         module = new ModuleWrapper(name, luainstance);

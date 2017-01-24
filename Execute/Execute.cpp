@@ -9,6 +9,7 @@ int main() {
     const char* buffer = "\
 module(...,package.seeall)\n\
 ID=100\n\
+Tab={}\
 \
 function _M:Awake()\n\
 	self.gid=20\n\
@@ -20,36 +21,37 @@ end\n\
 function _M:SetGID(id)\n\
 	self.gid=id\n\
 end\n\
-print(_M)\n\
-for k,v in pairs(_G) do\n\
-	print(k,v)\n\
+for i=1,500000 do\n\
+	table.insert(Tab,i)\n\
 end\n\
+print(_M)\n\
                          ";
 
     const char* kFileName = "login";
 
     VirtualMachine vm;
     vm.Open();
-    vm.PrintDebugRegistry();
+    //vm.PrintDebugRegistry();
     {
-        Pointer<LuaTable> gt = vm.Require(kFileName, buffer);
+        Pointer<LuaModule> gt = vm.Require(kFileName, buffer);
         assert(gt->GetNumber("ID") == 100);
-
         Pointer<LuaTable> obj1 = vm.GetModuleManager().CreateInstance(kFileName);
         //Pointer<LuaTable> obj2 = vm.GetModuleManager().CreateInstance(kFileName);
 
-        //auto awake = gt->GetFunction("Awake");
-        //auto getgid = gt->GetFunction("GetGID");
-        //auto setgid = gt->GetFunction("SetGID");
+        auto awake = gt->GetFunction("Awake");
+        auto getgid = gt->GetFunction("GetGID");
+        auto setgid = gt->GetFunction("SetGID");
 
-        //Assert::IsTrue(obj1->GetNumber("ID") == 100);
-        //obj1->SetValue("ID", 1000);
-        //Assert::IsTrue(obj1->GetNumber("ID") == 1000);
+        Assert::IsTrue(obj1->GetNumber("ID") == 100);
+        obj1->SetValue("ID", 1000);
+        Assert::IsTrue(obj1->GetNumber("ID") == 1000);
 
-        //awake->Call(obj1);
-        //Assert::IsTrue(getgid->Call<int>(obj1) == 20);
-        //setgid->Call(obj1, 15);
-        //Assert::IsTrue(getgid->Call<int>(obj1) == 15);
+        awake->Call(obj1);
+        Assert::IsTrue(getgid->Call<int>(obj1) == 20);
+        setgid->Call(obj1, 15);
+        Assert::IsTrue(getgid->Call<int>(obj1) == 15);
+
+        vm.PrintGCCount();
 
         //Assert::IsTrue(obj2->GetNumber("ID") == 100);
         //obj2->SetValue("ID", 1500);
